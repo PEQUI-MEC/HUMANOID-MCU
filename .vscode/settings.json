@@ -1,0 +1,13 @@
+{
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "C_Cpp.clang_format_fallbackStyle": "Chromium",
+  "platformio-ide.updateTerminalPathConfiguration": false,
+  "terminal.integrated.env.linux": {
+    "PLATFORMIO_CALLER": "vscode"
+  }
+}
