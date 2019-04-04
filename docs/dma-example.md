@@ -1,8 +1,14 @@
 # DMA Example
 
-Exemplo [retirado do fórum stm32duino](https://www.stm32duino.com/viewtopic.php?t=3887) de como utilizar DMA para transmitir mensagens por serial no stm32f103c (bluepill). A funcionalidade depende da biblioteca `libmaple` presente nos nucleos mais antigos do arduino para stm32f1.
+Exemplo [retirado do fórum stm32duino](https://www.stm32duino.com/viewtopic.php?t=3887) de como utilizar DMA para transmitir mensagens por serial no stm32f103c (bluepill). A funcionalidade depende da biblioteca `libmaple` presente no nucleo `maple` do arduino para stm32f1.
 
-Para utilizar o core antigo no platformio, basta adicionar a configuração `board_build.variant = custom` no arquivo `platformio.ini` ou utilizar a versão `4.5.0` ou anterior da plataforma `ststm32` (`platform = ststm32@~4.5.0`). Esse workaround foi retirado dessa [resposta no github](https://github.com/platformio/platform-ststm32/issues/76#issuecomment-449624969).
+Para utilizar o nucleo, é necessário aplicar uma das configurações no arquivo `platformio.ini`:
+
+- `board_build.core = maple` (**Utilizar essa opção**)
+- `board_build.variant = custom` (*Workaround*)
+- `platform = ststm32@~4.5.0` (*Workaround*)
+
+Esses workarounds foi retirado dessa [resposta no github](https://github.com/platformio/platform-ststm32/issues/76#issuecomment-449624969).
 
 ```c
 /* Exemple of UART Transmission using DMA
