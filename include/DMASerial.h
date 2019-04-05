@@ -20,8 +20,9 @@ class DMASerial {
   bool is_transfering(void);
   void on_completed(void);
 
-  // TODO: Refazer a função de alterar os dados
-  void set_data(String);
+  void set_data(uint8_t* data, uint8_t size);
+  void append_data(uint8_t* data, uint8_t size);
+  void reset_data();
 
   dma_dev* dev;
   dma_channel tube;
@@ -31,8 +32,9 @@ class DMASerial {
   dma_irq_handler irq_handler;
 
   bool initialized;
-  uint8_t size;
-  uint8_t* data;
+  uint8_t buffer_size;
+  uint8_t* buffer;
+  uint8_t index;
   bool transfering;
 };
 

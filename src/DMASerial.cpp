@@ -6,14 +6,14 @@ DMASerial::DMASerial(dma_dev* dev,
                      dma_irq_handler handler) {
   this->dev = dev;
   this->tube = tube;
-  this->size = size;
   this->irq_handler = handler;
+  buffer_size = size;
 
   initialized = false;
   transfering = false;
-  data = new uint8_t[size];
+  buffer = new uint8_t[size];
 
-  tube_config.tube_src = data;
+  tube_config.tube_src = buffer;
   tube_config.tube_src_size = DMA_SIZE_8BITS;
   tube_config.tube_dst_size = DMA_SIZE_8BITS;
   tube_config.target_data = 0;
@@ -25,7 +25,7 @@ DMASerial::DMASerial(dma_dev* dev,
 
 DMASerial::~DMASerial() {
   DMAInterrupts::remove_interrupt_handler(irq_handler);
-  delete[] data;
+  delete[] buffer;
 }
 
 void DMASerial::init(usart_dev* usart, dma_request_src req_src) {
@@ -62,7 +62,19 @@ void DMASerial::on_completed() {
   transfering = false;
 }
 
-void DMASerial::set_data(String str) {
-  for (uint8_t i = 0; i < min(size, str.length()); i++)
-    data[i] = str.charAt(i);
+void DMASerial::set_data(uint8_t* data, uint8_t size) {
+  for (index = 0; index < min(buffer_size, size); index++)
+    buffer[index] = data[index];
+}
+
+void DMASerial::append_data(uint8_t* data, uint8_t size) {
+  uint8_t initial = index;
+  while (index - initial < size && index < buffer_size) {
+    buffer[index] = data[index - initial];
+    index++;
+  }
+}
+
+void DMASerial::reset_data() {
+  index = 0;
 }

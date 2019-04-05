@@ -9,5 +9,27 @@
   "platformio-ide.updateTerminalPathConfiguration": false,
   "terminal.integrated.env.linux": {
     "PLATFORMIO_CALLER": "vscode"
+  },
+  "files.associations": {
+    "array": "cpp",
+    "*.tcc": "cpp",
+    "cctype": "cpp",
+    "clocale": "cpp",
+    "cmath": "cpp",
+    "cstdint": "cpp",
+    "cstdio": "cpp",
+    "cstdlib": "cpp",
+    "cwchar": "cpp",
+    "exception": "cpp",
+    "initializer_list": "cpp",
+    "iosfwd": "cpp",
+    "limits": "cpp",
+    "new": "cpp",
+    "stdexcept": "cpp",
+    "string_view": "cpp",
+    "cinttypes": "cpp",
+    "type_traits": "cpp",
+    "typeinfo": "cpp",
+    "utility": "cpp"
   }
 }

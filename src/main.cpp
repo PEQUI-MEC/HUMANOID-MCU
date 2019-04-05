@@ -1,38 +1,42 @@
 #include <Arduino.h>
 #include <DMAInterrupts.h>
 #include <DMASerial.h>
+#include <ServoManager.h>
+#include <config.h>
+#include <ros.h>
+#include <std_msgs/Int16MultiArray.h>
 
-unsigned long last_led_change;
+uint8_t pos_cmd[POS_CMD_SIZE];
+ServoManager manager;
+DMASerial servo_serial(DMA1, DMA_CH4, POS_CMD_SIZE, DMA_IRQ_HANDLER_1);
 
-String str("Mensagem teste 0\n");
-DMASerial serial(DMA1, DMA_CH4, str.length(), DMA_IRQ_HANDLER_1);
+void ros_callback(const std_msgs::Int16MultiArray& msg) {
+  for (uint8_t i = 0; i < msg.data_length; i++)
+    manager.set_position(i + 1, msg.data[i]);
+}
+
+ros::NodeHandle nh;
+ros::Subscriber<std_msgs::Int16MultiArray> sub("msg_name", ros_callback);
+uint32_t lastSpin;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
 
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW);
-
-  delay(5000);
+  delay(INITIAL_DELAY);
   Serial.println("Inicializado!");
 
-  serial.init(USART1, DMA_REQ_SRC_USART1_TX);
-  last_led_change = millis();
+  nh.initNode();
+  nh.subscribe(sub);
+  servo_serial.init(USART1, DMA_REQ_SRC_USART1_TX);
 }
 
 void loop() {
-  if (millis() - last_led_change >= 1000) {
-    digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
-    last_led_change = millis();
+  if (!servo_serial.is_transfering()) {
+    manager.assemble_pos_cmd(pos_cmd);
+    servo_serial.set_data(pos_cmd, POS_CMD_SIZE);
+    servo_serial.start();
   }
 
-  if (!serial.is_transfering()) {
-    char c = str.charAt(str.length() - 2) + 1;
-    if (c > '9')
-      c = '0';
-    str.setCharAt(str.length() - 2, c);
-    serial.set_data(str);
-
-    serial.start();
-  }
+  if (millis() - lastSpin >= SPIN_PERIOD)
+    nh.spinOnce();
 }
