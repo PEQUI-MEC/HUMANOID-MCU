@@ -12,8 +12,8 @@ class MockController {
 
  public:
   static void generate_sine_positions(ServoManager manager,
-                                      int16_t min = -180,
-                                      int16_t max = 150,
+                                      int16_t min = POS_MIN,
+                                      int16_t max = POS_MAX,
                                       float f = 0.5);
 };
 

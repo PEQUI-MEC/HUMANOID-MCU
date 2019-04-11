@@ -22,7 +22,7 @@ int16_t BodyServo::get_position(void) {
 
 uint16_t BodyServo::get_abs_position(void) {
   // TODO: Implementar mapeamento corretamente
-  return range_map(position, -180, 150, 0, 330);
+  return range_map(position, POS_MIN, POS_MAX, XYZ_POS_MIN, XYZ_POS_MAX);
 }
 
 void BodyServo::set_position(int16_t position) {

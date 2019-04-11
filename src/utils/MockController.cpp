@@ -1,4 +1,4 @@
-#include <MockController.h>
+#include <utils/MockController.h>
 
 void MockController::generate_sine_positions(ServoManager manager,
                                              int16_t min,
