@@ -13,10 +13,10 @@ class BodyServo {
   bool reverse;
 
  public:
-  BodyServo(uint8_t id,
-            int16_t position = 0,
-            int16_t offset = 0,
-            bool reverse = false);
+  explicit BodyServo(uint8_t id,
+                     int16_t position = 0,
+                     int16_t offset = 0,
+                     bool reverse = false);
   ~BodyServo();
 
   uint8_t get_id();

@@ -13,23 +13,33 @@ ServoManager::ServoManager()
 
 ServoManager::~ServoManager() {}
 
-BodyServo ServoManager::get_servo(uint8_t id) {
+uint8_t ServoManager::get_index(uint8_t id) {
+  for (uint8_t i = 0; i < servos.size(); i++) {
+    if (servos[i].get_id() == id)
+      return i;
+  }
+
+  return -1;
+}
+
+BodyServo& ServoManager::get_servo(uint8_t id) {
   for (uint8_t i = 0; i < servos.size(); i++) {
     if (servos[i].get_id() == id)
       return servos[i];
   }
 
-  return 0;
+  // Implementar assert para gerar erro caso o id seja inválido
 }
 
 void ServoManager::set_position(uint8_t id, int16_t position) {
-  servos[id].set_position(position);
+  uint8_t i = get_index(id);
+  if (i < 0)
+    return;
+
+  servos[i].set_position(position);
 }
 
 void ServoManager::assemble_pos_cmd(uint8_t* cmd) {
-  uint8_t index;
-  uint16_t abs_pos;
-
   // I-JOG: 0xFF 0xFF size id 0x05 checksum1 checksum2
   cmd[0] = XYZ_HEADER;
   cmd[1] = XYZ_HEADER;
@@ -37,6 +47,8 @@ void ServoManager::assemble_pos_cmd(uint8_t* cmd) {
   cmd[3] = BROADCAST_ID;
   cmd[4] = IJOG_CMD;
 
+  uint8_t index;
+  uint16_t abs_pos;
   for (uint8_t i = 0; i < servos.size(); i++) {
     index = POS_CMD_HEADER_SIZE + (5 * i);
     BodyServo& servo = servos[i];

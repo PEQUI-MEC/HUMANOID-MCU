@@ -17,7 +17,8 @@ class ServoManager {
   ServoManager();
   ~ServoManager();
 
-  BodyServo get_servo(uint8_t id);
+  uint8_t get_index(uint8_t id);
+  BodyServo& get_servo(uint8_t id);
   void set_position(uint8_t id, int16_t position);
 
   void assemble_pos_cmd(uint8_t* cmd_data);

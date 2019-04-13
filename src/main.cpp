@@ -22,7 +22,7 @@ DMASerial servo_serial(DMA1, DMA_CH4, POS_CMD_SIZE, DMA_IRQ_HANDLER_1);
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial1.begin(115200);
   Serial2.begin(115200);
 
@@ -32,7 +32,7 @@ void setup() {
 
   // nh.initNode();
   // nh.subscribe(sub);
-  servo_serial.init(USART3, DMA_REQ_SRC_USART3_TX);
+  servo_serial.init(USART1, DMA_REQ_SRC_USART1_TX);
 }
 
 void loop() {
@@ -40,10 +40,13 @@ void loop() {
 
   if (!servo_serial.is_transfering()) {
     manager.assemble_pos_cmd(pos_cmd);
-    servo_serial.set_data(pos_cmd, POS_CMD_SIZE);
-    servo_serial.start();
+    Serial.println(manager.get_servo(1).get_position());
+    Serial.println(manager.get_servo(1).get_abs_position());
+    Serial.println();
+    // servo_serial.set_data(pos_cmd, POS_CMD_SIZE);
+    // servo_serial.start();
     digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
-    delay(500);
+    delay(150);
   }
 
   // if (millis() - last_spin >= SPIN_PERIOD) {
