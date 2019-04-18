@@ -28,7 +28,7 @@ BodyServo& ServoManager::get_servo(uint8_t id) {
       return servos[i];
   }
 
-  // Implementar assert para gerar erro caso o id seja inválido
+  // TODO: Implementar assert para gerar erro caso o id seja inválido
 }
 
 void ServoManager::set_position(uint8_t id, int16_t position) {
@@ -40,17 +40,18 @@ void ServoManager::set_position(uint8_t id, int16_t position) {
 }
 
 void ServoManager::assemble_pos_cmd(uint8_t* cmd) {
-  // I-JOG: 0xFF 0xFF size id 0x05 checksum1 checksum2
+  // S-JOG: 0xFF 0xFF size id cmd checksum1 checksum2 playtime
   cmd[0] = XYZ_HEADER;
   cmd[1] = XYZ_HEADER;
-  cmd[2] = POS_CMD_SIZE;
+  cmd[2] = SJOG_SIZE;
   cmd[3] = BROADCAST_ID;
-  cmd[4] = IJOG_CMD;
+  cmd[4] = SJOG_CMD;
+  cmd[7] = PLAYTIME;
 
   uint8_t index;
   uint16_t abs_pos;
   for (uint8_t i = 0; i < servos.size(); i++) {
-    index = POS_CMD_HEADER_SIZE + (5 * i);
+    index = SJOG_HEADER_SIZE + (4 * i);
     BodyServo& servo = servos[i];
     abs_pos = servo.get_abs_position();
 
@@ -58,12 +59,11 @@ void ServoManager::assemble_pos_cmd(uint8_t* cmd) {
     cmd[index + 1] = abs_pos >> 8 & 0xFF;
     cmd[index + 2] = XYZ_POSITION_CONTROL;
     cmd[index + 3] = servo.get_id();
-    cmd[index + 4] = PLAYTIME;
   }
 
-  uint8_t checksum = cmd[2] ^ cmd[3] ^ cmd[4];
-  for (uint8_t i = 0; i < POS_CMD_DATA_SIZE; i++)
-    checksum ^= cmd[i + POS_CMD_HEADER_SIZE];
+  uint8_t checksum = cmd[2] ^ cmd[3] ^ cmd[4] ^ cmd[7];
+  for (uint8_t i = 0; i < SJOG_DATA_SIZE; i++)
+    checksum ^= cmd[i + SJOG_HEADER_SIZE];
 
   cmd[5] = checksum & 0xFE;
   cmd[6] = ~checksum & 0xFE;

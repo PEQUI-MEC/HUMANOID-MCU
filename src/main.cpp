@@ -7,9 +7,11 @@
 // #include <ros.h>
 // #include <std_msgs/Int16MultiArray.h>
 
-uint8_t pos_cmd[POS_CMD_SIZE];
+uint8_t pos_cmd[SJOG_SIZE];
 ServoManager manager;
-DMASerial servo_serial(DMA1, DMA_CH4, POS_CMD_SIZE, DMA_IRQ_HANDLER_1);
+// TODO: Resolver qual função define o canal
+//  ou se o canal é definido pela USART passada no init
+DMASerial servo_serial(DMA1, DMA_CH2, SJOG_SIZE, DMA_IRQ_HANDLER_1);
 
 // void ros_callback(const std_msgs::Int16MultiArray& msg) {
 //   for (uint8_t i = 0; i < msg.data_length; i++)
@@ -32,21 +34,17 @@ void setup() {
 
   // nh.initNode();
   // nh.subscribe(sub);
-  servo_serial.init(USART1, DMA_REQ_SRC_USART1_TX);
+  servo_serial.init(USART3, DMA_REQ_SRC_USART3_TX);
 }
 
 void loop() {
-  MockController::generate_sine_positions(manager, -300, 300);
+  MockController::generate_sine_positions(manager, -50, 50, 0.2);
 
   if (!servo_serial.is_transfering()) {
     manager.assemble_pos_cmd(pos_cmd);
-    Serial.println(manager.get_servo(1).get_position());
-    Serial.println(manager.get_servo(1).get_abs_position());
-    Serial.println();
-    // servo_serial.set_data(pos_cmd, POS_CMD_SIZE);
-    // servo_serial.start();
+    servo_serial.set_data(pos_cmd, SJOG_SIZE);
+    servo_serial.start();
     digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
-    delay(150);
   }
 
   // if (millis() - last_spin >= SPIN_PERIOD) {
