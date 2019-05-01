@@ -1,38 +1,39 @@
 #include <ServoManager.h>
 
 ServoManager::ServoManager()
-    : servos{{BodyServo(1, 0, 0, false), BodyServo(2, 0, 0, false),
-              BodyServo(3, 0, 0, false), BodyServo(4, 0, 0, false),
-              BodyServo(5, 0, 0, false), BodyServo(6, 0, 0, false),
-              BodyServo(7, 0, 0, false), BodyServo(8, 0, 0, false),
-              BodyServo(9, 0, 0, false), BodyServo(10, 0, 0, false),
-              BodyServo(11, 0, 0, false), BodyServo(12, 0, 0, false),
-              BodyServo(13, 0, 0, false), BodyServo(14, 0, 0, false),
-              BodyServo(15, 0, 0, false), BodyServo(16, 0, 0, false),
-              BodyServo(17, 0, 0, false), BodyServo(18, 0, 0, false)}} {}
+    : servos{{BodyServo(1, 5, 0, 0, false), BodyServo(2, 10, 0, 0, false),
+              BodyServo(3, 9, 0, 0, false), BodyServo(4, 2, 0, 0, false),
+              BodyServo(5, 18, 0, 0, false), BodyServo(6, 12, 0, -450, true),
+              BodyServo(7, 7, 0, 0, false), BodyServo(8, 8, 0, 0, false),
+              BodyServo(9, 3, 0, 0, false), BodyServo(10, 4, 0, 0, false),
+              BodyServo(11, 1, 0, 0, false), BodyServo(12, 6, 0, -450, true),
+              BodyServo(13, 13, 0, 0, false), BodyServo(14, 14, 0, 0, false),
+              BodyServo(15, 15, 0, 0, false), BodyServo(16, 16, 0, 0, false),
+              BodyServo(17, 17, 0, 0, false), BodyServo(18, 11, 0, 0, false)}} {
+}
 
 ServoManager::~ServoManager() {}
 
-uint8_t ServoManager::get_index(uint8_t id) {
+uint8_t ServoManager::get_index(uint8_t cid) {
   for (uint8_t i = 0; i < servos.size(); i++) {
-    if (servos[i].get_id() == id)
+    if (servos[i].get_cid() == cid)
       return i;
   }
 
   return -1;
 }
 
-BodyServo& ServoManager::get_servo(uint8_t id) {
+BodyServo& ServoManager::get_servo(uint8_t cid) {
   for (uint8_t i = 0; i < servos.size(); i++) {
-    if (servos[i].get_id() == id)
+    if (servos[i].get_cid() == cid)
       return servos[i];
   }
 
   // TODO: Implementar assert para gerar erro caso o id seja inválido
 }
 
-void ServoManager::set_position(uint8_t id, int16_t position) {
-  uint8_t i = get_index(id);
+void ServoManager::set_position(uint8_t cid, int16_t position) {
+  uint8_t i = get_index(cid);
   if (i < 0)
     return;
 
@@ -58,7 +59,7 @@ void ServoManager::assemble_pos_cmd(uint8_t* cmd) {
     cmd[index] = abs_pos & 0xFF;
     cmd[index + 1] = abs_pos >> 8 & 0xFF;
     cmd[index + 2] = XYZ_POSITION_CONTROL;
-    cmd[index + 3] = servo.get_id();
+    cmd[index + 3] = servo.get_rid();
   }
 
   uint8_t checksum = cmd[2] ^ cmd[3] ^ cmd[4] ^ cmd[7];

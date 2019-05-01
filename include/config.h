@@ -5,8 +5,8 @@
 #define SPIN_PERIOD 10  // ms
 
 // Servos definitions
-#define POS_MIN -1800
-#define POS_MAX 1500
+#define POS_MIN -1650
+#define POS_MAX 1650
 #define XYZ_POS_MIN 0
 #define XYZ_POS_MAX 1023
 #define NUM_SERVOS 18

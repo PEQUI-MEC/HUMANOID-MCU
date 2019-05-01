@@ -20,7 +20,7 @@ DMASerial servo_serial(DMA1, DMA_CH2, SJOG_SIZE, DMA_IRQ_HANDLER_1);
 
 // ros::NodeHandle nh;
 // ros::Subscriber<std_msgs::Int16MultiArray> sub("msg_name", ros_callback);
-// uint32_t last_spin;
+// time_t last_spin;
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
@@ -34,11 +34,13 @@ void setup() {
 
   // nh.initNode();
   // nh.subscribe(sub);
+  // last_spin = millis();
+
   servo_serial.init(USART3, DMA_REQ_SRC_USART3_TX);
 }
 
 void loop() {
-  MockController::generate_sine_positions(manager, -50, 50, 0.2);
+  MockController::generate_sine_positions(manager, -100, 100, 0.5);
 
   if (!servo_serial.is_transfering()) {
     manager.assemble_pos_cmd(pos_cmd);
