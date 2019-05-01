@@ -1,10 +1,10 @@
 #include <ServoManager.h>
 
 ServoManager::ServoManager()
-    : servos{{BodyServo(1, 5, 0, 0, false), BodyServo(2, 10, 0, 0, false),
+    : servos{{BodyServo(1, 5, 0, 0, false), BodyServo(2, 10, 0, 0, true),
               BodyServo(3, 9, 0, 0, false), BodyServo(4, 2, 0, 0, false),
               BodyServo(5, 18, 0, 0, false), BodyServo(6, 12, 0, -450, true),
-              BodyServo(7, 7, 0, 0, false), BodyServo(8, 8, 0, 0, false),
+              BodyServo(7, 7, 0, 0, false), BodyServo(8, 8, 0, 0, true),
               BodyServo(9, 3, 0, 0, false), BodyServo(10, 4, 0, 0, false),
               BodyServo(11, 1, 0, 0, false), BodyServo(12, 6, 0, -450, true),
               BodyServo(13, 13, 0, 0, false), BodyServo(14, 14, 0, 0, false),

@@ -27,10 +27,8 @@ int16_t BodyServo::get_position(void) {
 }
 
 uint16_t BodyServo::get_abs_position(void) {
-  int16_t real = position + offset;
-  if (reverse)
-    real = -real;
-
+  int16_t real = (reverse ? -position : position);
+  real += offset;
   return range_map(real, POS_MIN, POS_MAX, XYZ_POS_MIN, XYZ_POS_MAX);
 }
 

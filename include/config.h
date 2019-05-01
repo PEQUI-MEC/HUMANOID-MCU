@@ -2,7 +2,7 @@
 #define CONFIG_H_
 
 #define INITIAL_DELAY 2000
-#define SPIN_PERIOD 10  // ms
+#define SPIN_PERIOD 5  // ms
 
 // Servos definitions
 #define POS_MIN -1650
