@@ -17,14 +17,16 @@ ros::NodeHandle nh;
 time_t last_spin;
 
 void ros_callback(const std_msgs::Int16MultiArray& msg) {
-  if (msg.data_length != NUM_SERVOS)
+  if (msg.data_length != NUM_SERVOS + 1)
     return;
 
   for (uint8_t i = 0; i < NUM_SERVOS; i++)
     manager.set_position(i + 1, msg.data[i]);
+
+  manager.set_state(msg.data[NUM_SERVOS]);
 }
 
-ros::Subscriber<std_msgs::Int16MultiArray> sub("Bioloid/joint_pos_int",
+ros::Subscriber<std_msgs::Int16MultiArray> sub("Bioloid/joint_pos",
                                                ros_callback);
 
 void setup() {
@@ -33,8 +35,12 @@ void setup() {
   Serial1.begin(115200);
   Serial2.begin(115200);
 
-  delay(INITIAL_DELAY);
   digitalWrite(LED_BUILTIN, LOW);
+  delay(INITIAL_DELAY);
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(500);
+
+  manager.set_state(STATE_INITIAL);
 
   nh.getHardware()->setBaud(500000);
   nh.initNode();
@@ -47,7 +53,7 @@ void setup() {
 void loop() {
   // MockController::generate_sine_positions(manager, -100, 100, 0.5);
 
-  if (!servo_serial.is_transfering()) {
+  if (!servo_serial.is_transfering() && manager.reset_delay()) {
     manager.assemble_pos_cmd(pos_cmd);
     servo_serial.set_data(pos_cmd, SJOG_SIZE);
     servo_serial.start();

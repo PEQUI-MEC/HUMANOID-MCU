@@ -1,7 +1,7 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-#define INITIAL_DELAY 2000
+#define INITIAL_DELAY 5000
 #define SPIN_PERIOD 5  // ms
 
 // Servos definitions
@@ -11,6 +11,18 @@
 #define XYZ_POS_MAX 1023
 #define NUM_SERVOS 18
 #define PLAYTIME 1
+#define PLAYTIME_SMOOTH 150
+
+// Control States
+#define STATE_INITIAL 0
+#define STATE_IDLE 1
+#define STATE_MARCH 2
+#define STATE_WALK 3
+#define STATE_TURN 4
+#define STATE_FALLEN 5
+#define STATE_UP 6
+#define STATE_PENALIZED 7
+#define STATE_TURN90 8
 
 // XYZ Communication
 #define XYZ_HEADER 0xFF

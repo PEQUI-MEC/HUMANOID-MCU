@@ -10,9 +10,40 @@ ServoManager::ServoManager()
               BodyServo(13, 13, 0, 0, false), BodyServo(14, 14, 0, 0, false),
               BodyServo(15, 15, 0, 0, false), BodyServo(16, 16, 0, 0, false),
               BodyServo(17, 17, 0, 0, false), BodyServo(18, 11, 0, 0, false)}} {
+  state = STATE_INITIAL;
+  delay = 0;
+  delay_start = 0;
 }
 
 ServoManager::~ServoManager() {}
+
+void ServoManager::set_state(uint8_t new_state) {
+  if (state == STATE_INITIAL || new_state == STATE_INITIAL)
+    setup_delay(PLAYTIME_SMOOTH * 10);
+
+  state = new_state;
+}
+
+void ServoManager::setup_delay(time_t delay) {
+  this->delay = delay;
+}
+
+void ServoManager::start_delay() {
+  if (delay > 0)
+    delay_start = millis();
+}
+
+bool ServoManager::reset_delay() {
+  if (delay_start == 0) {
+    return true;
+  } else if (millis() - delay_start >= delay) {
+    delay = 0;
+    delay_start = 0;
+    return true;
+  } else {
+    return false;
+  }
+}
 
 uint8_t ServoManager::get_index(uint8_t cid) {
   for (uint8_t i = 0; i < servos.size(); i++) {
@@ -47,7 +78,7 @@ void ServoManager::assemble_pos_cmd(uint8_t* cmd) {
   cmd[2] = SJOG_SIZE;
   cmd[3] = BROADCAST_ID;
   cmd[4] = SJOG_CMD;
-  cmd[7] = PLAYTIME;
+  cmd[7] = max(PLAYTIME, delay / 10);
 
   uint8_t index;
   uint16_t abs_pos;
@@ -68,4 +99,6 @@ void ServoManager::assemble_pos_cmd(uint8_t* cmd) {
 
   cmd[5] = checksum & 0xFE;
   cmd[6] = ~checksum & 0xFE;
+
+  start_delay();
 }
