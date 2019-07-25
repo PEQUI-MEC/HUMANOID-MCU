@@ -1,14 +1,14 @@
 #include <ServoManager.h>
 
 ServoManager::ServoManager()
-    : servos{{BodyServo(1, 5, 0, 0, false), BodyServo(2, 10, 0, 0, true),
-              BodyServo(3, 9, 0, 0, false), BodyServo(4, 2, 0, 0, false),
-              BodyServo(5, 18, 0, 0, false), BodyServo(6, 12, 0, -450, true),
-              BodyServo(7, 7, 0, 0, false), BodyServo(8, 8, 0, 0, true),
-              BodyServo(9, 3, 0, 0, false), BodyServo(10, 4, 0, 0, false),
-              BodyServo(11, 1, 0, 0, false), BodyServo(12, 6, 0, -450, true),
+    : servos{{BodyServo(1, 5, 0, 0, false), BodyServo(2, 4, 0, 0, false),
+              BodyServo(3, 3, 0, 0, true), BodyServo(4, 10, 0, 0, true),
+              BodyServo(5, 15, 0, 0, false), BodyServo(6, 6, 0, 0, true),
+              BodyServo(7, 1, 0, 0, false), BodyServo(8, 8, 0, 0, true),
+              BodyServo(9, 7, 0, 0, false), BodyServo(10, 2, 0, 0, false),
+              BodyServo(11, 18, 0, 0, false), BodyServo(12, 12, 0, 0, true),
               BodyServo(13, 13, 0, 0, false), BodyServo(14, 14, 0, 0, false),
-              BodyServo(15, 15, 0, 0, false), BodyServo(16, 16, 0, 0, false),
+              BodyServo(15, 9, 0, 0, false), BodyServo(16, 16, 0, 0, false),
               BodyServo(17, 17, 0, 0, false), BodyServo(18, 11, 0, 0, false)}} {
   state = STATE_INITIAL;
   delay = 0;
@@ -52,15 +52,6 @@ uint8_t ServoManager::get_index(uint8_t cid) {
   }
 
   return -1;
-}
-
-BodyServo& ServoManager::get_servo(uint8_t cid) {
-  for (uint8_t i = 0; i < servos.size(); i++) {
-    if (servos[i].get_cid() == cid)
-      return servos[i];
-  }
-
-  // TODO: Implementar assert para gerar erro caso o id seja inválido
 }
 
 void ServoManager::set_position(uint8_t cid, int16_t position) {
