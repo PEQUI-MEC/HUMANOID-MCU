@@ -3,6 +3,7 @@
 
 #define INITIAL_DELAY 5000
 #define SPIN_PERIOD 5  // ms
+#define USB_BAUD_RATE 115200
 
 // Servos definitions
 #define POS_MIN -1650
