@@ -1,10 +1,10 @@
-# DMA Example
+# STM32 DMA
 
 Exemplo [retirado do fórum stm32duino](https://www.stm32duino.com/viewtopic.php?t=3887) de como utilizar DMA para transmitir mensagens por serial no stm32f103c (bluepill). A funcionalidade depende da biblioteca `libmaple` presente no nucleo `maple` do arduino para stm32f1.
 
-Para utilizar o nucleo, é necessário aplicar uma das configurações no arquivo `platformio.ini`:
+Para utilizar o nucleo, é necessário aplicar **uma** das configurações no arquivo `platformio.ini`:
 
-- `board_build.core = maple` (**Utilizar essa opção**)
+- `board_build.core = maple` ([Suporte Oficial](https://docs.platformio.org/en/latest/platforms/ststm32.html?highlight=board_build.core#configuration))
 - `board_build.variant = custom` (*Workaround*)
 - `platform = ststm32@~4.5.0` (*Workaround*)
 
@@ -128,3 +128,9 @@ void loop() {
   delay(100);
 }
 ```
+
+## DMA Channels
+
+A requisição por parte de cada linha (tx e rx) das três seriais utilizam canais diferentes do DMA. Esse mapeamento entre as linhas e o canal utilizado pode ser encontrado no [User Guide - Reference Manual](https://www.st.com/content/ccc/resource/technical/document/reference_manual/59/b9/ba/7f/11/af/43/d5/CD00171190.pdf/files/CD00171190.pdf/jcr:content/translations/en.CD00171190.pdf) do STM32F103xx.
+
+- DMA Request Mapping: Página 281
