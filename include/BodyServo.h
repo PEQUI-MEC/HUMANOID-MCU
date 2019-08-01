@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <config.h>
-#include <utils/servo_utils.h>
+#include <utils/generic_functions.h>
 
 class BodyServo {
  private:

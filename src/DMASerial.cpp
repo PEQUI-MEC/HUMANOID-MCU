@@ -1,11 +1,7 @@
 #include "DMASerial.h"
 
-DMASerial::DMASerial(dma_dev* dev,
-                     dma_channel tube,
-                     uint8_t size,
-                     dma_irq_handler handler) {
+DMASerial::DMASerial(dma_dev* dev, uint8_t size, dma_irq_handler handler) {
   this->dev = dev;
-  this->tube = tube;
   this->irq_handler = handler;
   buffer_size = size;
 
@@ -32,6 +28,23 @@ void DMASerial::init(usart_dev* usart, dma_request_src req_src) {
   usart->regs->CR3 = USART_CR3_DMAT;
   tube_config.tube_req_src = req_src;
   tube_config.tube_dst = &(usart->regs->DR);
+
+  switch (req_src) {
+    case DMA_REQ_SRC_USART1_TX:
+      tube = DMA_CH4;
+      break;
+
+    case DMA_REQ_SRC_USART2_TX:
+      tube = DMA_CH7;
+      break;
+
+    case DMA_REQ_SRC_USART3_TX:
+      tube = DMA_CH2;
+      break;
+
+    default:
+      tube = DMA_CH0;
+  }
 
   dma_init(dev);
   dma_set_priority(dev, tube, DMA_PRIORITY_LOW);
