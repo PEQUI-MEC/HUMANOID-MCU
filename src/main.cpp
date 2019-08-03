@@ -10,7 +10,7 @@
 
 uint8_t pos_cmd[SJOG_SIZE];
 ServoManager manager;
-DMASerial servo_serial(DMA1, SJOG_SIZE, DMA_IRQ_HANDLER_1);
+DMASerial servo_serial(DMA1, DMA_CH7, SJOG_SIZE, DMA_IRQ_HANDLER_1);
 
 uint8_t button_prev_state[] = {HIGH, HIGH, HIGH, HIGH, HIGH};
 

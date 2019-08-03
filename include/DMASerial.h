@@ -8,7 +8,10 @@
 
 class DMASerial {
  public:
-  DMASerial(dma_dev* dev, uint8_t size, dma_irq_handler handler);
+  DMASerial(dma_dev* dev,
+            dma_channel tube,
+            uint8_t size,
+            dma_irq_handler handler);
   ~DMASerial(void);
 
   void init(usart_dev* usart = USART1,
