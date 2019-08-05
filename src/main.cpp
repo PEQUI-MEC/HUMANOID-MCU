@@ -12,7 +12,7 @@ uint8_t pos_cmd[SJOG_SIZE];
 ServoManager manager;
 DMASerial servo_serial(DMA1, DMA_CH7, SJOG_SIZE, DMA_IRQ_HANDLER_1);
 
-uint8_t button_prev_state[] = {HIGH, HIGH, HIGH, HIGH, HIGH};
+time_t btn_last_press[] = {0, 0, 0, 0, 0};
 
 ros::NodeHandle nh;
 time_t last_spin;
@@ -65,30 +65,26 @@ void joint_pos_callback(const std_msgs::Int16MultiArray& msg) {
 }
 
 void check_buttons() {
-  uint8_t state = digitalRead(BUTTON0);
-  if (state == LOW && button_prev_state[0] == HIGH)
+  time_t now = millis();
+  if (digitalRead(BUTTON0) == LOW && now - btn_last_press[0] >= BTN_PRESS_DELAY)
     run_button0_action();
-  button_prev_state[0] = state;
+  btn_last_press[0] = now;
 
-  state = digitalRead(BUTTON1);
-  if (state == LOW && button_prev_state[1] == HIGH)
+  if (digitalRead(BUTTON1) == LOW && now - btn_last_press[1] >= BTN_PRESS_DELAY)
     run_button1_action();
-  button_prev_state[1] = state;
+  btn_last_press[1] = now;
 
-  state = digitalRead(BUTTON2);
-  if (state == LOW && button_prev_state[2] == HIGH)
+  if (digitalRead(BUTTON2) == LOW && now - btn_last_press[2] >= BTN_PRESS_DELAY)
     run_button2_action();
-  button_prev_state[2] = state;
+  btn_last_press[2] = now;
 
-  state = digitalRead(BUTTON3);
-  if (state == LOW && button_prev_state[3] == HIGH)
+  if (digitalRead(BUTTON3) == LOW && now - btn_last_press[3] >= BTN_PRESS_DELAY)
     run_button3_action();
-  button_prev_state[3] = state;
+  btn_last_press[3] = now;
 
-  state = digitalRead(BUTTON4);
-  if (state == LOW && button_prev_state[4] == HIGH)
+  if (digitalRead(BUTTON4) == LOW && now - btn_last_press[4] >= BTN_PRESS_DELAY)
     run_button4_action();
-  button_prev_state[4] = state;
+  btn_last_press[4] = now;
 }
 
 void run_button0_action() {

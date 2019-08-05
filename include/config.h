@@ -5,6 +5,7 @@
 
 #define INITIAL_DELAY 3000
 #define SPIN_PERIOD 5  // ms
+#define BTN_PRESS_DELAY 1000
 
 // Serial definitions
 #define BAUD_RATE_CONTROL 500000
