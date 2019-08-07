@@ -66,25 +66,35 @@ void joint_pos_callback(const std_msgs::Int16MultiArray& msg) {
 
 void check_buttons() {
   time_t now = millis();
-  if (digitalRead(BUTTON0) == LOW && now - btn_last_press[0] >= BTN_PRESS_DELAY)
+  if (digitalRead(BUTTON0) == LOW &&
+      now - btn_last_press[0] >= BTN_PRESS_DELAY) {
     run_button0_action();
-  btn_last_press[0] = now;
+    btn_last_press[0] = now;
+  }
 
-  if (digitalRead(BUTTON1) == LOW && now - btn_last_press[1] >= BTN_PRESS_DELAY)
+  if (digitalRead(BUTTON1) == LOW &&
+      now - btn_last_press[1] >= BTN_PRESS_DELAY) {
     run_button1_action();
-  btn_last_press[1] = now;
+    btn_last_press[1] = now;
+  }
 
-  if (digitalRead(BUTTON2) == LOW && now - btn_last_press[2] >= BTN_PRESS_DELAY)
+  if (digitalRead(BUTTON2) == LOW &&
+      now - btn_last_press[2] >= BTN_PRESS_DELAY) {
     run_button2_action();
-  btn_last_press[2] = now;
+    btn_last_press[2] = now;
+  }
 
-  if (digitalRead(BUTTON3) == LOW && now - btn_last_press[3] >= BTN_PRESS_DELAY)
+  if (digitalRead(BUTTON3) == LOW &&
+      now - btn_last_press[3] >= BTN_PRESS_DELAY) {
     run_button3_action();
-  btn_last_press[3] = now;
+    btn_last_press[3] = now;
+  }
 
-  if (digitalRead(BUTTON4) == LOW && now - btn_last_press[4] >= BTN_PRESS_DELAY)
+  if (digitalRead(BUTTON4) == LOW &&
+      now - btn_last_press[4] >= BTN_PRESS_DELAY) {
     run_button4_action();
-  btn_last_press[4] = now;
+    btn_last_press[4] = now;
+  }
 }
 
 void run_button0_action() {
