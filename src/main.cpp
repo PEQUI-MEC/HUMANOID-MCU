@@ -4,20 +4,57 @@
 #include <ServoManager.h>
 #include <config.h>
 #include <ros.h>
+#include <setup.h>
 #include <std_msgs/Int16MultiArray.h>
-#include <utils/MockController.h>
+#include <utils/generic_functions.h>
 
 uint8_t pos_cmd[SJOG_SIZE];
 ServoManager manager;
-// TODO: Resolver qual função define o canal
-//  ou se o canal é definido pela USART passada no init
-DMASerial servo_serial2(DMA1, DMA_CH7, SJOG_SIZE, DMA_IRQ_HANDLER_1);
-// DMASerial servo_serial3(DMA1, DMA_CH2, SJOG_SIZE, DMA_IRQ_HANDLER_2);
+DMASerial servo_serial(DMA1, DMA_CH7, SJOG_SIZE, DMA_IRQ_HANDLER_1);
+
+time_t btn_last_press[] = {0, 0, 0, 0, 0};
 
 ros::NodeHandle nh;
 time_t last_spin;
+ros::Subscriber<std_msgs::Int16MultiArray> sub("Bioloid/joint_pos",
+                                               joint_pos_callback);
 
-void ros_callback(const std_msgs::Int16MultiArray& msg) {
+void setup() {
+  setup_pin_modes();
+  setup_serial_baud_rate();
+
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(INITIAL_DELAY);
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(500);
+
+  manager.set_state(STATE_INITIAL);
+
+  nh.getHardware()->setBaud(BAUD_RATE_CONTROL);
+  nh.initNode();
+  nh.subscribe(sub);
+  last_spin = millis();
+
+  servo_serial.init(USART2, DMA_REQ_SRC_USART2_TX);
+}
+
+void loop() {
+  if (!servo_serial.is_transfering() && manager.reset_delay()) {
+    manager.assemble_pos_cmd(pos_cmd);
+    servo_serial.set_data(pos_cmd, SJOG_SIZE);
+    servo_serial.start();
+    toggle_pin(LED_BUILTIN);
+  }
+
+  if (millis() - last_spin >= SPIN_PERIOD) {
+    nh.spinOnce();
+    last_spin = millis();
+  }
+
+  check_buttons();
+}
+
+void joint_pos_callback(const std_msgs::Int16MultiArray& msg) {
   if (msg.data_length != NUM_SERVOS + 1)
     return;
 
@@ -27,50 +64,51 @@ void ros_callback(const std_msgs::Int16MultiArray& msg) {
   manager.set_state(msg.data[NUM_SERVOS]);
 }
 
-ros::Subscriber<std_msgs::Int16MultiArray> sub("Bioloid/joint_pos",
-                                               ros_callback);
+void check_buttons() {
+  time_t now = millis();
+  if (digitalRead(BUTTON0) == LOW &&
+      now - btn_last_press[0] >= BTN_PRESS_DELAY) {
+    run_button0_action();
+    btn_last_press[0] = now;
+  }
 
-void setup() {
-  pinMode(LED_BUILTIN, OUTPUT);
-  Serial.begin(USB_BAUD_RATE);
-  Serial2.begin(115200);
+  if (digitalRead(BUTTON1) == LOW &&
+      now - btn_last_press[1] >= BTN_PRESS_DELAY) {
+    run_button1_action();
+    btn_last_press[1] = now;
+  }
 
-#ifdef USE_STM32_HW_SERIAL
-  Serial1.begin(115200);
-#else
-  Serial2.begin(115200);
-#endif
+  if (digitalRead(BUTTON2) == LOW &&
+      now - btn_last_press[2] >= BTN_PRESS_DELAY) {
+    run_button2_action();
+    btn_last_press[2] = now;
+  }
 
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(INITIAL_DELAY);
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(500);
+  if (digitalRead(BUTTON3) == LOW &&
+      now - btn_last_press[3] >= BTN_PRESS_DELAY) {
+    run_button3_action();
+    btn_last_press[3] = now;
+  }
 
-  manager.set_state(STATE_INITIAL);
-
-  nh.getHardware()->setBaud(USB_BAUD_RATE);
-  nh.initNode();
-  nh.subscribe(sub);
-  last_spin = millis();
-
-  servo_serial2.init(USART2, DMA_REQ_SRC_USART2_TX);
-  // servo_serial3.init(USART3, DMA_REQ_SRC_USART3_TX);
+  if (digitalRead(BUTTON4) == LOW &&
+      now - btn_last_press[4] >= BTN_PRESS_DELAY) {
+    run_button4_action();
+    btn_last_press[4] = now;
+  }
 }
 
-void loop() {
-  // MockController::generate_sine_positions(manager, -100, 100, 0.5);
-
-  if (!servo_serial2.is_transfering() && manager.reset_delay()) {
-    manager.assemble_pos_cmd(pos_cmd);
-    servo_serial2.set_data(pos_cmd, SJOG_SIZE);
-    // servo_serial3.set_data(pos_cmd, SJOG_SIZE);
-    servo_serial2.start();
-    // servo_serial3.start();
-    digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
-  }
-
-  if (millis() - last_spin >= SPIN_PERIOD) {
-    nh.spinOnce();
-    last_spin = millis();
-  }
+void run_button0_action() {
+  toggle_pin(LED0);
+}
+void run_button1_action() {
+  toggle_pin(LED1);
+}
+void run_button2_action() {
+  toggle_pin(LED2);
+}
+void run_button3_action() {
+  toggle_pin(LED3);
+}
+void run_button4_action() {
+  toggle_pin(LED4);
 }
