@@ -54,12 +54,13 @@
 #define XYZ_POS_MAX 1023
 #define NUM_SERVOS 18
 #define PLAYTIME 1
-#define PLAYTIME_SMOOTH 150
+#define PLAYTIME_SMOOTH 100
 
-// XYZ Communication
+// XYZ Protocol
 #define XYZ_HEADER 0xFF
 #define BROADCAST_ID 254
-#define XYZ_POSITION_CONTROL 0
+#define SET_POSITION_CONTROL 0
+#define SET_TORQUE_OFF 2
 
 #define SJOG_CMD 0x06
 #define SJOG_HEADER_SIZE 8

@@ -10,12 +10,12 @@ class DMASerial {
  public:
   DMASerial(dma_dev* dev,
             dma_channel tube,
-            uint8_t size,
+            uint8_t buffer_size,
             dma_irq_handler handler);
   ~DMASerial(void);
 
-  void init(usart_dev* usart = USART1,
-            dma_request_src req_src = DMA_REQ_SRC_USART1_TX);
+  void init(usart_dev* usart = USART2,
+            dma_request_src req_src = DMA_REQ_SRC_USART2_TX);
   int8_t start(void);
   bool is_transfering(void);
   void on_completed(void);

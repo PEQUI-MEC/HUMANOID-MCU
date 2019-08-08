@@ -2,22 +2,21 @@
 
 DMASerial::DMASerial(dma_dev* dev,
                      dma_channel tube,
-                     uint8_t size,
+                     uint8_t buffer_size,
                      dma_irq_handler handler) {
   this->dev = dev;
   this->tube = tube;
   this->irq_handler = handler;
-  buffer_size = size;
+  this->buffer_size = buffer_size;
 
   initialized = false;
   transfering = false;
-  buffer = new uint8_t[size];
+  buffer = new uint8_t[buffer_size];
 
   tube_config.tube_src = buffer;
   tube_config.tube_src_size = DMA_SIZE_8BITS;
   tube_config.tube_dst_size = DMA_SIZE_8BITS;
   tube_config.target_data = 0;
-  tube_config.tube_nr_xfers = size;
   tube_config.tube_flags = (DMA_FROM_MEM | DMA_MINC_MODE | DMA_TRNS_CMPLT);
 
   DMAInterrupts::set_interrupt_handler(handler, this);
@@ -44,6 +43,8 @@ int8_t DMASerial::start(void) {
     return 1;
   if (transfering)
     return 2;
+
+  tube_config.tube_nr_xfers = index;
 
   int8_t error = dma_tube_cfg(dev, tube, &tube_config);
   if (error == DMA_TUBE_CFG_SUCCESS) {

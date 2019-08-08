@@ -7,30 +7,49 @@
 
 #include <Arduino.h>
 #include <BodyServo.h>
+#include <DMASerial.h>
+#include <XYZrobotServo.h>
 #include <config.h>
+
+enum class ManagerState {
+  Initial = 0,
+  IdleReceived = 1,
+  SendSmoothIdle = 2,
+  WaitSmoothIdle = 3,
+  Ready = 4,
+  Running = 5
+};
 
 class ServoManager {
  private:
-  uint8_t state;
-  time_t delay;
-  time_t delay_start;
+  ManagerState state;
+  time_t wait_time;
+  time_t wait_start;
+  bool smooth;
+
   std::array<BodyServo, NUM_SERVOS> servos;
 
  public:
+  DMASerial serial;
+  uint8_t* cmd_buffer;
+  bool torque;
+
   ServoManager();
   ~ServoManager();
 
-  void set_state(uint8_t state);
+  void set_state(ManagerState state);
+  void state_logic();
+  void updated_joint_pos();
 
-  void setup_delay(time_t delay);
-  void start_delay();
-  bool reset_delay();
+  void wait(time_t ms);
+  void wait_servo_connection(uint8_t id = 0);
+  bool has_finished_waiting();
 
-  uint8_t get_index(uint8_t cid);
-  BodyServo& get_servo(uint8_t cid);
+  uint8_t get_servo_index(uint8_t cid);
   void set_position(uint8_t cid, int16_t position);
 
   void assemble_pos_cmd(uint8_t* cmd_data);
+  bool send_pos_cmd();
 };
 
 #endif
