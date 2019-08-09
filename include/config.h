@@ -48,6 +48,7 @@
 #define STATE_TURN90 8
 
 // Servos definitions
+#define CHECK_ID 0
 #define POS_MIN -1650
 #define POS_MAX 1650
 #define XYZ_POS_MIN 0

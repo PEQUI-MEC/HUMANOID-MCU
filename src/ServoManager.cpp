@@ -1,17 +1,17 @@
 #include <ServoManager.h>
 
-ServoManager::ServoManager()
+ServoManager::ServoManager(ManagerState start_state)
     : servos{{BodyServo(1, 5, 0, -75, false), BodyServo(2, 10, 0, 0, true),
               BodyServo(3, 3, 0, 0, false), BodyServo(4, 4, 0, 0, false),
               BodyServo(5, 15, 0, -75, false), BodyServo(6, 12, 0, 0, true),
               BodyServo(7, 1, 0, 0, false), BodyServo(8, 8, 0, 0, true),
-              BodyServo(9, 7, 0, 0, false), BodyServo(10, 2, 0, 0, false),
-              BodyServo(11, 18, 0, 0, false), BodyServo(12, 6, 0, 0, true),
-              BodyServo(13, 13, 0, 0, false), BodyServo(14, 14, 0, 0, false),
-              BodyServo(15, 9, 0, 0, false), BodyServo(16, 16, 0, 0, false),
-              BodyServo(17, 17, 0, 0, false), BodyServo(18, 11, 0, 0, false)}},
+              BodyServo(9, 14, 0, 0, false), BodyServo(10, 2, 0, 0, false),
+              BodyServo(11, 9, 0, 0, false), BodyServo(12, 6, 0, 0, true),
+              BodyServo(13, 13, 0, 0, false), BodyServo(14, 7, 0, 0, false),
+              BodyServo(15, 11, 0, 0, false), BodyServo(16, 16, 0, 0, false),
+              BodyServo(17, 17, 0, 0, false), BodyServo(18, 18, 0, 0, false)}},
       serial(DMA1, DMA_CH7, SJOG_SIZE, DMA_IRQ_HANDLER_1) {
-  set_state(ManagerState::Initial);
+  set_state(start_state);
   wait_time = 0;
   wait_start = 0;
   torque = true;
@@ -38,6 +38,11 @@ void ServoManager::set_state(ManagerState state) {
 
 void ServoManager::state_logic() {
   switch (state) {
+    case ManagerState::WaitServo:
+      if (is_servo_connected())
+        set_state(ManagerState::Initial);
+      break;
+
     case ManagerState::IdleReceived:
       if (has_finished_waiting())
         set_state(ManagerState::SendSmoothIdle);
@@ -67,18 +72,6 @@ void ServoManager::updated_joint_pos() {
 void ServoManager::wait(time_t ms) {
   wait_time = ms;
   wait_start = millis();
-}
-
-void ServoManager::wait_servo_connection(uint8_t id) {
-  if (id == 0)
-    id = servos[get_servo_index(1)].get_rid();
-
-  XYZrobotServo servo(SERIAL_SERVOS, id);
-
-  do {
-    two_stage_blink(LED_BUILTIN, true);
-    servo.readStatus();
-  } while (servo.getLastError());
 }
 
 bool ServoManager::has_finished_waiting() {
@@ -111,6 +104,16 @@ void ServoManager::set_position(uint8_t cid, int16_t position) {
   servos[i].set_position(position);
 }
 
+bool ServoManager::is_servo_connected(uint8_t rid) {
+  if (rid == 0)
+    rid = servos[get_servo_index(1)].get_rid();
+
+  XYZrobotServo servo(SERIAL_SERVOS, rid);
+  two_stage_blink(LED_BUILTIN, true);
+  servo.readStatus();
+  return !servo.getLastError();
+}
+
 void ServoManager::assemble_pos_cmd(uint8_t* buffer) {
   // S-JOG: 0xFF 0xFF size id cmd checksum1 checksum2 playtime
   buffer[0] = XYZ_HEADER;
@@ -141,12 +144,13 @@ void ServoManager::assemble_pos_cmd(uint8_t* buffer) {
 }
 
 bool ServoManager::send_pos_cmd() {
-  if (serial.is_transfering() || !has_finished_waiting())
+  if (serial.is_transfering() || !has_finished_waiting() ||
+      state == ManagerState::WaitServo)
     return false;
 
   assemble_pos_cmd(cmd_buffer);
   serial.set_data(cmd_buffer, SJOG_SIZE);
-  if (!serial.start())
+  if (serial.start() != DMA_TUBE_CFG_SUCCESS)
     return false;
 
   if (smooth)

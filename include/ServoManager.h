@@ -12,12 +12,13 @@
 #include <config.h>
 
 enum class ManagerState {
-  Initial = 0,
-  IdleReceived = 1,
-  SendSmoothIdle = 2,
-  WaitSmoothIdle = 3,
-  Ready = 4,
-  Running = 5
+  WaitServo = 0,
+  Initial = 1,
+  IdleReceived = 2,
+  SendSmoothIdle = 3,
+  WaitSmoothIdle = 4,
+  Ready = 5,
+  Running = 6
 };
 
 class ServoManager {
@@ -34,7 +35,7 @@ class ServoManager {
   uint8_t* cmd_buffer;
   bool torque;
 
-  ServoManager();
+  ServoManager(ManagerState start_state = ManagerState::WaitServo);
   ~ServoManager();
 
   void set_state(ManagerState state);
@@ -42,11 +43,11 @@ class ServoManager {
   void updated_joint_pos();
 
   void wait(time_t ms);
-  void wait_servo_connection(uint8_t id = 0);
   bool has_finished_waiting();
 
   uint8_t get_servo_index(uint8_t cid);
   void set_position(uint8_t cid, int16_t position);
+  bool is_servo_connected(uint8_t rid = CHECK_ID);
 
   void assemble_pos_cmd(uint8_t* cmd_data);
   bool send_pos_cmd();

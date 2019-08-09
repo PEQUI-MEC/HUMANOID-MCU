@@ -4,6 +4,7 @@
 #include <ros.h>
 #include <setup.h>
 #include <std_msgs/Int16MultiArray.h>
+#include <utils/MockController.h>
 #include <utils/generic_functions.h>
 
 ServoManager manager;
@@ -29,8 +30,8 @@ void setup() {
   nh.subscribe(sub);
   last_spin = millis();
 
-  manager.wait_servo_connection();
   manager.serial.init(USART2, DMA_REQ_SRC_USART2_TX);
+  digitalWrite(LED0, HIGH);
 }
 
 void loop() {
@@ -90,7 +91,8 @@ void check_buttons() {
 }
 
 void run_button0_action() {
-  toggle_pin(LED0);
+  manager.torque = !manager.torque;
+  digitalWrite(LED0, manager.torque);
 }
 void run_button1_action() {
   toggle_pin(LED1);
