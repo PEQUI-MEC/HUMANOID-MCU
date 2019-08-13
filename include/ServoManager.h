@@ -26,7 +26,6 @@ class ServoManager {
   ManagerState state;
   time_t wait_time;
   time_t wait_start;
-  bool smooth;
 
   std::array<BodyServo, NUM_SERVOS> servos;
 
@@ -34,6 +33,7 @@ class ServoManager {
   DMASerial serial;
   uint8_t* cmd_buffer;
   bool torque;
+  bool smooth;
 
   ServoManager(ManagerState start_state = ManagerState::WaitServo);
   ~ServoManager();

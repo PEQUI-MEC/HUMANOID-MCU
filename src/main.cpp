@@ -4,7 +4,6 @@
 #include <ros.h>
 #include <setup.h>
 #include <std_msgs/Int16MultiArray.h>
-#include <utils/MockController.h>
 #include <utils/generic_functions.h>
 
 ServoManager manager;
@@ -21,8 +20,10 @@ void setup() {
   setup_serial_baud_rate();
 
   digitalWrite(LED_BUILTIN, LOW);
+  digitalWrite(LED4, LOW);
   delay(INITIAL_DELAY);
   digitalWrite(LED_BUILTIN, HIGH);
+  digitalWrite(LED4, HIGH);
   delay(500);
 
   nh.getHardware()->setBaud(BAUD_RATE_CONTROL);
@@ -31,7 +32,6 @@ void setup() {
   last_spin = millis();
 
   manager.serial.init(USART2, DMA_REQ_SRC_USART2_TX);
-  digitalWrite(LED0, HIGH);
 }
 
 void loop() {
@@ -91,8 +91,7 @@ void check_buttons() {
 }
 
 void run_button0_action() {
-  manager.torque = !manager.torque;
-  digitalWrite(LED0, manager.torque);
+  toggle_pin(LED0);
 }
 void run_button1_action() {
   toggle_pin(LED1);

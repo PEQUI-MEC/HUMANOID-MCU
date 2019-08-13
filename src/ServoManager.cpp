@@ -1,11 +1,11 @@
 #include <ServoManager.h>
 
 ServoManager::ServoManager(ManagerState start_state)
-    : servos{{BodyServo(1, 5, 0, -75, false), BodyServo(2, 10, 0, 0, true),
-              BodyServo(3, 3, 0, 0, false), BodyServo(4, 4, 0, 0, false),
-              BodyServo(5, 15, 0, -75, false), BodyServo(6, 12, 0, 0, true),
-              BodyServo(7, 1, 0, 0, false), BodyServo(8, 8, 0, 0, true),
-              BodyServo(9, 14, 0, 0, false), BodyServo(10, 2, 0, 0, false),
+    : servos{{BodyServo(1, 5, 0, -50, false), BodyServo(2, 10, 0, -90, true),
+              BodyServo(3, 3, 0, -10, false), BodyServo(4, 4, 0, -160, false),
+              BodyServo(5, 15, 0, -20, false), BodyServo(6, 12, 0, 0, true),
+              BodyServo(7, 1, 0, -30, false), BodyServo(8, 8, 0, -90, true),
+              BodyServo(9, 14, 0, -10, false), BodyServo(10, 2, 0, -180, false),
               BodyServo(11, 9, 0, 0, false), BodyServo(12, 6, 0, 0, true),
               BodyServo(13, 13, 0, 0, false), BodyServo(14, 7, 0, 0, false),
               BodyServo(15, 11, 0, 0, false), BodyServo(16, 16, 0, 0, false),
@@ -157,5 +157,6 @@ bool ServoManager::send_pos_cmd() {
     wait(PLAYTIME_SMOOTH * 10);
 
   toggle_pin(LED_BUILTIN);
+  toggle_pin(LED4);
   return true;
 }
