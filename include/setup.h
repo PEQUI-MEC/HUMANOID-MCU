@@ -2,8 +2,6 @@
 #define SETUP_H_
 
 #include <Arduino.h>
-#include <DMASerial.h>
-#include <ServoManager.h>
 #include <config.h>
 #include <std_msgs/Int16MultiArray.h>
 

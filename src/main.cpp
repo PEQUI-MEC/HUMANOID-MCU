@@ -47,12 +47,8 @@ void loop() {
 }
 
 void joint_pos_callback(const std_msgs::Int16MultiArray& msg) {
-  // TODO: Remover o estado no fim da mensagem
-  if (msg.data_length != NUM_SERVOS + 1)
-    return;
-
   for (uint8_t i = 0; i < NUM_SERVOS; i++)
-    manager.set_position(i + 1, msg.data[i]);
+    manager.set_position(i, msg.data[i]);
 
   manager.updated_joint_pos();
 }
@@ -91,7 +87,10 @@ void check_buttons() {
 }
 
 void run_button0_action() {
-  toggle_pin(LED0);
+  if (manager.get_state() == ManagerState::WaitServo) {
+    digitalWrite(LED0, HIGH);
+    manager.set_state(ManagerState::Initial);
+  }
 }
 void run_button1_action() {
   toggle_pin(LED1);

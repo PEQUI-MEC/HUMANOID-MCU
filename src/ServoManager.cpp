@@ -1,15 +1,24 @@
 #include <ServoManager.h>
 
 ServoManager::ServoManager(ManagerState start_state)
-    : servos{{BodyServo(1, 5, 0, -50, false), BodyServo(2, 10, 0, -90, true),
-              BodyServo(3, 3, 0, -10, false), BodyServo(4, 4, 0, -160, false),
-              BodyServo(5, 15, 0, -20, false), BodyServo(6, 12, 0, 0, true),
-              BodyServo(7, 1, 0, -30, false), BodyServo(8, 8, 0, -90, true),
-              BodyServo(9, 14, 0, -10, false), BodyServo(10, 2, 0, -180, false),
-              BodyServo(11, 9, 0, 0, false), BodyServo(12, 6, 0, 0, true),
-              BodyServo(13, 13, 0, 0, false), BodyServo(14, 7, 0, 0, false),
-              BodyServo(15, 11, 0, 0, false), BodyServo(16, 16, 0, 0, false),
-              BodyServo(17, 17, 0, 0, false), BodyServo(18, 18, 0, 0, false)}},
+    : servos{{BodyServo(RIGHT_ANKLE_ROLL, 5, 0, -30, false),
+              BodyServo(RIGHT_ANKLE_PITCH, 10, 287, -90, true),
+              BodyServo(RIGHT_KNEE, 3, -599, -10, false),
+              BodyServo(RIGHT_HIP_PITCH, 4, 462, -160, false),
+              BodyServo(RIGHT_HIP_ROLL, 15, 0, -20, false),
+              BodyServo(RIGHT_HIP_YAW, 12, 0, 0, true),
+              BodyServo(LEFT_ANKLE_ROLL, 1, 0, -40, false),
+              BodyServo(LEFT_ANKLE_PITCH, 8, 287, -90, true),
+              BodyServo(LEFT_KNEE, 14, -599, -10, false),
+              BodyServo(LEFT_HIP_PITCH, 2, 462, -180, false),
+              BodyServo(LEFT_HIP_ROLL, 9, 0, -10, false),
+              BodyServo(LEFT_HIP_YAW, 6, 0, 0, true),
+              BodyServo(LEFT_ARM_PITCH, 13, 0, 0, false),
+              BodyServo(LEFT_ARM_YAW, 7, 0, 0, false),
+              BodyServo(LEFT_ARM_ROLL, 11, 0, 0, false),
+              BodyServo(RIGHT_ARM_PITCH, 16, 0, 0, false),
+              BodyServo(RIGHT_ARM_YAW, 17, 0, 0, false),
+              BodyServo(RIGHT_ARM_ROLL, 18, 0, 0, false)}},
       serial(DMA1, DMA_CH7, SJOG_SIZE, DMA_IRQ_HANDLER_1) {
   set_state(start_state);
   wait_time = 0;
@@ -20,6 +29,10 @@ ServoManager::ServoManager(ManagerState start_state)
 
 ServoManager::~ServoManager() {
   delete[] cmd_buffer;
+}
+
+ManagerState ServoManager::get_state() {
+  return state;
 }
 
 void ServoManager::set_state(ManagerState state) {
@@ -104,11 +117,11 @@ void ServoManager::set_position(uint8_t cid, int16_t position) {
   servos[i].set_position(position);
 }
 
-bool ServoManager::is_servo_connected(uint8_t rid) {
-  if (rid == 0)
-    rid = servos[get_servo_index(1)].get_rid();
+bool ServoManager::is_servo_connected(uint8_t id, bool translate_id) {
+  if (translate_id)
+    id = servos[get_servo_index(id)].get_rid();
 
-  XYZrobotServo servo(SERIAL_SERVOS, rid);
+  XYZrobotServo servo(SERIAL_SERVOS, id);
   two_stage_blink(LED_BUILTIN, true);
   servo.readStatus();
   return !servo.getLastError();

@@ -38,6 +38,7 @@ class ServoManager {
   ServoManager(ManagerState start_state = ManagerState::WaitServo);
   ~ServoManager();
 
+  ManagerState get_state();
   void set_state(ManagerState state);
   void state_logic();
   void updated_joint_pos();
@@ -47,7 +48,7 @@ class ServoManager {
 
   uint8_t get_servo_index(uint8_t cid);
   void set_position(uint8_t cid, int16_t position);
-  bool is_servo_connected(uint8_t rid = CHECK_ID);
+  bool is_servo_connected(uint8_t id = CHECK_ID, bool translate_id = true);
 
   void assemble_pos_cmd(uint8_t* cmd_data);
   bool send_pos_cmd();

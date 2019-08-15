@@ -48,7 +48,26 @@
 #define STATE_TURN90 8
 
 // Servos definitions
-#define CHECK_ID 0
+#define RIGHT_ANKLE_ROLL 0
+#define RIGHT_ANKLE_PITCH 1
+#define RIGHT_KNEE 2
+#define RIGHT_HIP_PITCH 3
+#define RIGHT_HIP_ROLL 4
+#define RIGHT_HIP_YAW 5
+#define LEFT_ANKLE_ROLL 6
+#define LEFT_ANKLE_PITCH 7
+#define LEFT_KNEE 8
+#define LEFT_HIP_PITCH 9
+#define LEFT_HIP_ROLL 10
+#define LEFT_HIP_YAW 11
+#define LEFT_ARM_PITCH 12
+#define LEFT_ARM_YAW 13
+#define LEFT_ARM_ROLL 14
+#define RIGHT_ARM_PITCH 15
+#define RIGHT_ARM_YAW 16
+#define RIGHT_ARM_ROLL 17
+
+#define CHECK_ID RIGHT_HIP_YAW
 #define POS_MIN -1650
 #define POS_MAX 1650
 #define XYZ_POS_MIN 0

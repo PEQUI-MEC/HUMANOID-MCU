@@ -9,6 +9,6 @@ void MockController::generate_sine_positions(ServoManager& manager,
   float time = (float)millis() / 1000.0;
 
   int16_t pos = ((amplitude * cos(2 * M_PI * f * time)) + reference);
-  for (uint8_t i = 1; i <= NUM_SERVOS; i++)
+  for (uint8_t i = 0; i < NUM_SERVOS; i++)
     manager.set_position(i, pos);
 }
