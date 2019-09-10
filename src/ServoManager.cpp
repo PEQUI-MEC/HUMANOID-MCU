@@ -1,5 +1,7 @@
 #include <ServoManager.h>
 
+ServoManager manager;
+
 ServoManager::ServoManager(ManagerState start_state)
     : servos{{BodyServo(RIGHT_ANKLE_ROLL, 5, 0, -30, false),
               BodyServo(RIGHT_ANKLE_PITCH, 10, 287, -90, true),
@@ -19,10 +21,9 @@ ServoManager::ServoManager(ManagerState start_state)
               BodyServo(RIGHT_ARM_PITCH, 16, 0, 0, false),
               BodyServo(RIGHT_ARM_YAW, 17, 0, 0, false),
               BodyServo(RIGHT_ARM_ROLL, 18, 0, 0, false)}},
-      serial(DMA1, DMA_CH7, SJOG_SIZE, DMA_IRQ_HANDLER_1) {
+      serial(DMA1, DMA_CH7, SJOG_SIZE, DMA_IRQ_HANDLER_1),
+      delay(PLAYTIME_SMOOTH * 10) {
   set_state(start_state);
-  wait_time = 0;
-  wait_start = 0;
   torque = true;
   cmd_buffer = new uint8_t[SJOG_SIZE];
 }
@@ -57,7 +58,7 @@ void ServoManager::state_logic() {
       break;
 
     case ManagerState::IdleReceived:
-      if (has_finished_waiting())
+      if (delay.has_finished())
         set_state(ManagerState::SendSmoothIdle);
       break;
 
@@ -66,7 +67,7 @@ void ServoManager::state_logic() {
       break;
 
     case ManagerState::WaitSmoothIdle:
-      if (has_finished_waiting())
+      if (delay.has_finished())
         set_state(ManagerState::Ready);
       break;
 
@@ -80,24 +81,6 @@ void ServoManager::state_logic() {
 void ServoManager::updated_joint_pos() {
   if (state == ManagerState::Initial)
     set_state(ManagerState::IdleReceived);
-}
-
-void ServoManager::wait(time_t ms) {
-  wait_time = ms;
-  wait_start = millis();
-}
-
-bool ServoManager::has_finished_waiting() {
-  if (wait_start == 0)
-    return true;
-
-  if (millis() - wait_start >= wait_time) {
-    wait_time = 0;
-    wait_start = 0;
-    return true;
-  }
-
-  return false;
 }
 
 uint8_t ServoManager::get_servo_index(uint8_t cid) {
@@ -157,7 +140,7 @@ void ServoManager::assemble_pos_cmd(uint8_t* buffer) {
 }
 
 bool ServoManager::send_pos_cmd() {
-  if (serial.is_transfering() || !has_finished_waiting() ||
+  if (serial.is_transfering() || !delay.has_finished() ||
       state == ManagerState::WaitServo)
     return false;
 
@@ -167,9 +150,8 @@ bool ServoManager::send_pos_cmd() {
     return false;
 
   if (smooth)
-    wait(PLAYTIME_SMOOTH * 10);
+    delay.start();
 
-  toggle_pin(LED_BUILTIN);
-  toggle_pin(LED4);
+  toggle_debug_led();
   return true;
 }

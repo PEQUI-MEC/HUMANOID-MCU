@@ -10,6 +10,9 @@
 #include <DMASerial.h>
 #include <XYZrobotServo.h>
 #include <config.h>
+#include <peripherals.h>
+#include <utils/DelayTimer.h>
+#include <utils/generic_functions.h>
 
 enum class ManagerState {
   WaitServo = 0,
@@ -24,13 +27,11 @@ enum class ManagerState {
 class ServoManager {
  private:
   ManagerState state;
-  time_t wait_time;
-  time_t wait_start;
-
   std::array<BodyServo, NUM_SERVOS> servos;
 
  public:
   DMASerial serial;
+  DelayTimer delay;
   uint8_t* cmd_buffer;
   bool torque;
   bool smooth;
@@ -43,9 +44,6 @@ class ServoManager {
   void state_logic();
   void updated_joint_pos();
 
-  void wait(time_t ms);
-  bool has_finished_waiting();
-
   uint8_t get_servo_index(uint8_t cid);
   void set_position(uint8_t cid, int16_t position);
   bool is_servo_connected(uint8_t id = CHECK_ID, bool translate_id = true);
@@ -53,5 +51,7 @@ class ServoManager {
   void assemble_pos_cmd(uint8_t* cmd_data);
   bool send_pos_cmd();
 };
+
+extern ServoManager manager;
 
 #endif

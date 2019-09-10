@@ -1,35 +1,39 @@
 #include <Arduino.h>
 #include <ServoManager.h>
 #include <config.h>
-#include <ros.h>
-#include <setup.h>
-#include <std_msgs/Int16MultiArray.h>
-#include <utils/generic_functions.h>
+#include <peripherals.h>
+#include <ros_communication.h>
 
-ServoManager manager;
+void setup_pin_modes() {
+  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(BUTTON0, INPUT);
+  pinMode(BUTTON1, INPUT);
+  pinMode(BUTTON2, INPUT);
+  pinMode(BUTTON3, INPUT);
+  pinMode(BUTTON4, INPUT);
+  pinMode(LED0, OUTPUT);
+  pinMode(LED1, OUTPUT);
+  pinMode(LED2, OUTPUT);
+  pinMode(LED3, OUTPUT);
+  pinMode(LED4, OUTPUT);
+}
 
-time_t btn_last_press[] = {0, 0, 0, 0, 0};
-
-ros::NodeHandle nh;
-time_t last_spin;
-ros::Subscriber<std_msgs::Int16MultiArray> sub("Bioloid/joint_pos",
-                                               joint_pos_callback);
+void setup_serial_baud_rate() {
+  SERIAL_CONTROL.begin(BAUD_RATE_CONTROL);
+  SERIAL_SERVOS.begin(BAUD_RATE_SERVOS);
+  // SERIAL_DEBUG.begin(BAUD_RATE_DEBUG);
+}
 
 void setup() {
   setup_pin_modes();
   setup_serial_baud_rate();
 
-  digitalWrite(LED_BUILTIN, LOW);
-  digitalWrite(LED4, LOW);
+  write_debug_led(LOW);
   delay(INITIAL_DELAY);
-  digitalWrite(LED_BUILTIN, HIGH);
-  digitalWrite(LED4, HIGH);
+  write_debug_led(HIGH);
   delay(500);
 
-  nh.getHardware()->setBaud(BAUD_RATE_CONTROL);
-  nh.initNode();
-  nh.subscribe(sub);
-  last_spin = millis();
+  ros_setup();
 
   manager.serial.init(USART2, DMA_REQ_SRC_USART2_TX);
 }
@@ -38,69 +42,8 @@ void loop() {
   manager.state_logic();
   manager.send_pos_cmd();
 
-  if (millis() - last_spin >= SPIN_PERIOD) {
-    nh.spinOnce();
-    last_spin = millis();
-  }
+  ros_spin();
+  ros_check_connection(LED3);
 
   check_buttons();
-}
-
-void joint_pos_callback(const std_msgs::Int16MultiArray& msg) {
-  for (uint8_t i = 0; i < NUM_SERVOS; i++)
-    manager.set_position(i, msg.data[i]);
-
-  manager.updated_joint_pos();
-}
-
-void check_buttons() {
-  time_t now = millis();
-  if (digitalRead(BUTTON0) == LOW &&
-      now - btn_last_press[0] >= BTN_PRESS_DELAY) {
-    run_button0_action();
-    btn_last_press[0] = now;
-  }
-
-  if (digitalRead(BUTTON1) == LOW &&
-      now - btn_last_press[1] >= BTN_PRESS_DELAY) {
-    run_button1_action();
-    btn_last_press[1] = now;
-  }
-
-  if (digitalRead(BUTTON2) == LOW &&
-      now - btn_last_press[2] >= BTN_PRESS_DELAY) {
-    run_button2_action();
-    btn_last_press[2] = now;
-  }
-
-  if (digitalRead(BUTTON3) == LOW &&
-      now - btn_last_press[3] >= BTN_PRESS_DELAY) {
-    run_button3_action();
-    btn_last_press[3] = now;
-  }
-
-  if (digitalRead(BUTTON4) == LOW &&
-      now - btn_last_press[4] >= BTN_PRESS_DELAY) {
-    run_button4_action();
-    btn_last_press[4] = now;
-  }
-}
-
-void run_button0_action() {
-  if (manager.get_state() == ManagerState::WaitServo) {
-    digitalWrite(LED0, HIGH);
-    manager.set_state(ManagerState::Initial);
-  }
-}
-void run_button1_action() {
-  toggle_pin(LED1);
-}
-void run_button2_action() {
-  toggle_pin(LED2);
-}
-void run_button3_action() {
-  toggle_pin(LED3);
-}
-void run_button4_action() {
-  toggle_pin(LED4);
 }
