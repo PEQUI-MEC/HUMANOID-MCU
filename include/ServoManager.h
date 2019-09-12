@@ -15,13 +15,13 @@
 #include <utils/generic_functions.h>
 
 enum class ManagerState {
-  WaitServo = 0,
-  Initial = 1,
-  IdleReceived = 2,
-  SendSmoothIdle = 3,
-  WaitSmoothIdle = 4,
-  Ready = 5,
-  Running = 6
+  WaitServo,
+  Initial,
+  IdleReceived,
+  SendSmoothIdle,
+  WaitSmoothIdle,
+  Ready,
+  Running
 };
 
 class ServoManager {

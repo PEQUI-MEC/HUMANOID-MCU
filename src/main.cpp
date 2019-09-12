@@ -1,8 +1,8 @@
 #include <Arduino.h>
+#include <RosCommunication.h>
 #include <ServoManager.h>
 #include <config.h>
 #include <peripherals.h>
-#include <ros_communication.h>
 
 void setup_pin_modes() {
   pinMode(LED_BUILTIN, OUTPUT);
@@ -28,12 +28,12 @@ void setup() {
   setup_pin_modes();
   setup_serial_baud_rate();
 
-  write_debug_led(LOW);
-  delay(INITIAL_DELAY);
   write_debug_led(HIGH);
+  delay(INITIAL_DELAY);
+  write_debug_led(LOW);
   delay(500);
 
-  ros_setup();
+  control.setup();
 
   manager.serial.init(USART2, DMA_REQ_SRC_USART2_TX);
 }
@@ -42,8 +42,8 @@ void loop() {
   manager.state_logic();
   manager.send_pos_cmd();
 
-  ros_spin();
-  ros_check_connection(LED3);
+  control.spin();
+  control.check_connection(LED0);
 
   check_buttons();
 }

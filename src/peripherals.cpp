@@ -3,18 +3,22 @@
 time_t btn_last_press[] = {0, 0, 0, 0, 0};
 
 void run_button0_action() {
-  if (manager.get_state() == ManagerState::WaitServo) {
-    digitalWrite(LED0, HIGH);
-    manager.set_state(ManagerState::Initial);
-  }
+  control.ignore.start();
+  // TODO: Verificar se é necessário retornar os motores para a posição inicial
+  control.publish_command("reset");
+  manager.set_state(ManagerState::Initial);
 }
 
 void run_button1_action() {
-  toggle_pin(LED1);
+  control.is_mode_manual = !control.is_mode_manual;
+  control.publish_command(control.is_mode_manual ? "set_mode_manual"
+                                                 : "set_mode_auto");
+  digitalWrite(LED1, control.is_mode_manual);
 }
 
 void run_button2_action() {
-  toggle_pin(LED2);
+  if (control.is_mode_manual)
+    control.publish_command("walk");
 }
 
 void run_button3_action() {
@@ -22,7 +26,10 @@ void run_button3_action() {
 }
 
 void run_button4_action() {
-  // toggle_pin(LED4);
+  if (manager.get_state() == ManagerState::WaitServo) {
+    digitalWrite(LED3, HIGH);
+    manager.set_state(ManagerState::Initial);
+  }
 }
 
 void check_buttons() {
@@ -59,7 +66,7 @@ void check_buttons() {
 }
 
 void write_debug_led(uint8_t value) {
-  digitalWrite(LED_BUILTIN, value);
+  digitalWrite(LED_BUILTIN, !value);
   digitalWrite(LED4, value);
 }
 

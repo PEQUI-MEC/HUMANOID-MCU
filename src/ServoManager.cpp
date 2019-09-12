@@ -72,7 +72,7 @@ void ServoManager::state_logic() {
       break;
 
     case ManagerState::Ready:
-      // Send ready command
+      control.publish_command("ready");
       set_state(ManagerState::Running);
       break;
   }

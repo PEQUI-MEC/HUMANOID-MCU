@@ -2,9 +2,9 @@
 #define PERIPHERALS_H_
 
 #include <Arduino.h>
+#include <RosCommunication.h>
 #include <ServoManager.h>
 #include <config.h>
-#include <ros_communication.h>
 #include <utils/generic_functions.h>
 
 void check_buttons();

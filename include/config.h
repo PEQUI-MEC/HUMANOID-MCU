@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 #define INITIAL_DELAY 3000
-#define SPIN_PERIOD 5  // ms
+#define SPIN_PERIOD 3  // ms
 #define BTN_PRESS_DELAY 500
 
 // Serial definitions
