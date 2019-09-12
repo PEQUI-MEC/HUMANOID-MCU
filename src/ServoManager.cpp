@@ -152,6 +152,6 @@ bool ServoManager::send_pos_cmd() {
   if (smooth)
     delay.start();
 
-  toggle_debug_led();
+  // toggle_pin(LED_BUILTIN);
   return true;
 }
