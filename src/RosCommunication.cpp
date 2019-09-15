@@ -3,8 +3,8 @@
 RosCommunication control;
 
 RosCommunication::RosCommunication()
-    : cmd_pub("Bioloid/control_command", &this->str_msg),
-      joint_pos_sub("Bioloid/joint_pos", joint_pos_callback),
+    : cmd_pub("PMH/control_command", &this->str_msg),
+      joint_pos_sub("PMH/joint_pos", joint_pos_callback),
       ignore(PLAYTIME_SMOOTH * 10) {}
 
 void RosCommunication::setup() {
