@@ -11,7 +11,7 @@ ServoManager::ServoManager(ManagerState start_state)
               BodyServo(RIGHT_HIP_YAW, 12, 0, 0, true),
               BodyServo(LEFT_ANKLE_ROLL, 1, 0, -30, false),
               BodyServo(LEFT_ANKLE_PITCH, 8, 0, -30, true),
-              BodyServo(LEFT_KNEE, 14, 0, -10, false),
+              BodyServo(LEFT_KNEE, 14, 0, -50, false),
               BodyServo(LEFT_HIP_PITCH, 2, 0, -20, false),
               BodyServo(LEFT_HIP_ROLL, 9, 0, -15, false),
               BodyServo(LEFT_HIP_YAW, 6, 0, 0, true),
