@@ -22,7 +22,6 @@
 #endif
 
 // Pin definitions
-#define VBAT_ADC PA0  // 2.2V
 #define I2C_SCL PB8
 #define I2C_SDA PB9
 #define BUTTON0 PB12
@@ -35,17 +34,8 @@
 #define LED2 PA7
 #define LED3 PA6
 #define LED4 PA5
-
-// Control States
-#define STATE_INITIAL 0
-#define STATE_IDLE 1
-#define STATE_MARCH 2
-#define STATE_WALK 3
-#define STATE_TURN 4
-#define STATE_FALLEN 5
-#define STATE_UP 6
-#define STATE_PENALIZED 7
-#define STATE_TURN90 8
+#define LED_CONNECTION LED0
+#define LED_CONTROL_MODE LED1
 
 // Servos definitions
 #define RIGHT_ANKLE_ROLL 0

@@ -78,9 +78,11 @@ void ServoManager::state_logic() {
   }
 }
 
-void ServoManager::updated_joint_pos() {
-  if (state == ManagerState::Initial)
-    set_state(ManagerState::IdleReceived);
+void ServoManager::reset() {
+  set_state(ManagerState::Initial);
+
+  for (auto servo : servos)
+    servo.set_position(0);
 }
 
 uint8_t ServoManager::get_servo_index(uint8_t cid) {

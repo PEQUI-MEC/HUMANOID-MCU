@@ -3,21 +3,17 @@
 time_t btn_last_press[] = {0, 0, 0, 0, 0};
 
 void run_button0_action() {
-  control.ignore.start();
-  // TODO: Verificar se é necessário retornar os motores para a posição inicial
   control.publish_command("reset");
-  manager.set_state(ManagerState::Initial);
+  manager.reset();
 }
 
 void run_button1_action() {
-  control.is_mode_manual = !control.is_mode_manual;
-  control.publish_command(control.is_mode_manual ? "set_mode_manual"
-                                                 : "set_mode_auto");
-  digitalWrite(LED1, control.is_mode_manual);
+  control.publish_command(control.status.is_mode_manual ? "set_mode_auto"
+                                                        : "set_mode_manual");
 }
 
 void run_button2_action() {
-  if (control.is_mode_manual)
+  if (control.status.is_mode_manual)
     control.publish_command("walk");
 }
 

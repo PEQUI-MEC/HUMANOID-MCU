@@ -44,7 +44,7 @@ void loop() {
   manager.send_pos_cmd();
 
   control.spin();
-  control.check_connection(LED0);
+  control.check_connection();
 
   check_buttons();
 }

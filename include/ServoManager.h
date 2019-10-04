@@ -42,7 +42,7 @@ class ServoManager {
   ManagerState get_state();
   void set_state(ManagerState state);
   void state_logic();
-  void updated_joint_pos();
+  void reset();
 
   uint8_t get_servo_index(uint8_t cid);
   void set_position(uint8_t cid, int16_t position);
