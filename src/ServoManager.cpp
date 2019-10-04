@@ -81,8 +81,8 @@ void ServoManager::state_logic() {
 void ServoManager::reset() {
   set_state(ManagerState::Initial);
 
-  for (auto servo : servos)
-    servo.set_position(0);
+  for (int i = 0; i < servos.size(); i++)
+    servos[i].set_position(0);
 }
 
 uint8_t ServoManager::get_servo_index(uint8_t cid) {
