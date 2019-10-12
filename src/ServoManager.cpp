@@ -5,24 +5,24 @@ ServoManager manager;
 ServoManager::ServoManager(ManagerState start_state)
     : servos{{BodyServo(RIGHT_ANKLE_ROLL, 5, 0, -30, false),
               BodyServo(RIGHT_ANKLE_PITCH, 10, 0, 0, true),
-              BodyServo(RIGHT_KNEE, 3, 0, -20, false),
+              BodyServo(RIGHT_KNEE, 16, 0, -20, false),
               BodyServo(RIGHT_HIP_PITCH, 4, 0, -5, false),
               BodyServo(RIGHT_HIP_ROLL, 15, 0, -30, false),
               BodyServo(RIGHT_HIP_YAW, 12, 0, 0, true),
-              BodyServo(LEFT_ANKLE_ROLL, 1, 0, -30, false),
-              BodyServo(LEFT_ANKLE_PITCH, 8, 0, -30, true),
+              BodyServo(LEFT_ANKLE_ROLL, 1, 0, -35, false),
+              BodyServo(LEFT_ANKLE_PITCH, 8, 0, -10, true),
               BodyServo(LEFT_KNEE, 14, 0, -50, false),
               BodyServo(LEFT_HIP_PITCH, 2, 0, -20, false),
               BodyServo(LEFT_HIP_ROLL, 9, 0, -15, false),
               BodyServo(LEFT_HIP_YAW, 6, 0, 0, true),
-              BodyServo(LEFT_ARM_PITCH, 13, 0, 0, false),
+              BodyServo(LEFT_ARM_PITCH, 3, 0, 0, false),
               BodyServo(LEFT_ARM_YAW, 7, 0, 0, false),
               BodyServo(LEFT_ARM_ROLL, 11, 0, 0, false),
-              BodyServo(RIGHT_ARM_PITCH, 16, 0, 0, false),
+              BodyServo(RIGHT_ARM_PITCH, 13, 0, 0, false),
               BodyServo(RIGHT_ARM_YAW, 17, 0, 0, false),
               BodyServo(RIGHT_ARM_ROLL, 18, 0, 0, false)}},
       serial(DMA1, DMA_CH7, SJOG_SIZE, DMA_IRQ_HANDLER_1),
-      delay(PLAYTIME_SMOOTH * 10) {
+      delay(DELAY_PLAYTIME_SMOOTH) {
   set_state(start_state);
   torque = true;
   cmd_buffer = new uint8_t[SJOG_SIZE];
@@ -38,15 +38,22 @@ ManagerState ServoManager::get_state() {
 
 void ServoManager::set_state(ManagerState state) {
   this->state = state;
+  enable = true;
+  smooth = false;
 
   switch (state) {
+    case ManagerState::WaitServo:
+      enable = false;
+      break;
+
     case ManagerState::Initial:
     case ManagerState::SendSmoothIdle:
       smooth = true;
       break;
 
-    default:
-      smooth = false;
+    case ManagerState::Ready:
+      digitalWrite(LED_READY, HIGH);
+      break;
   }
 }
 
@@ -81,7 +88,7 @@ void ServoManager::state_logic() {
 void ServoManager::reset() {
   set_state(ManagerState::Initial);
 
-  for (int i = 0; i < servos.size(); i++)
+  for (uint8_t i = 0; i < servos.size(); i++)
     servos[i].set_position(0);
 }
 
@@ -142,8 +149,7 @@ void ServoManager::assemble_pos_cmd(uint8_t* buffer) {
 }
 
 bool ServoManager::send_pos_cmd() {
-  if (serial.is_transfering() || !delay.has_finished() ||
-      state == ManagerState::WaitServo)
+  if (serial.is_transfering() || !enable || !delay.has_finished())
     return false;
 
   assemble_pos_cmd(cmd_buffer);
@@ -151,8 +157,7 @@ bool ServoManager::send_pos_cmd() {
   if (serial.start() != DMA_TUBE_CFG_SUCCESS)
     return false;
 
-  if (smooth)
-    delay.start();
+  delay.start(smooth ? DELAY_PLAYTIME_SMOOTH : DELAY_PLAYTIME);
 
   // toggle_pin(LED_BUILTIN);
   return true;

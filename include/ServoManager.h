@@ -33,6 +33,7 @@ class ServoManager {
   DMASerial serial;
   DelayTimer delay;
   uint8_t* cmd_buffer;
+  bool enable;
   bool torque;
   bool smooth;
 

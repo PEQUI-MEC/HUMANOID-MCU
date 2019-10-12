@@ -36,6 +36,7 @@
 #define LED4 PA5
 #define LED_CONNECTION LED0
 #define LED_CONTROL_MODE LED1
+#define LED_READY LED2
 
 // Servos definitions
 #define RIGHT_ANKLE_ROLL 0
@@ -63,8 +64,10 @@
 #define XYZ_POS_MIN 0
 #define XYZ_POS_MAX 1023
 #define NUM_SERVOS 18
-#define PLAYTIME 1
+#define PLAYTIME 5
 #define PLAYTIME_SMOOTH 100
+#define DELAY_PLAYTIME (PLAYTIME * 10)
+#define DELAY_PLAYTIME_SMOOTH (PLAYTIME_SMOOTH * 10)
 
 // XYZ Protocol
 #define XYZ_HEADER 0xFF
