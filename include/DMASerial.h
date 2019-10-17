@@ -2,20 +2,26 @@
 #define DMASERIAL_H_
 
 #include <Arduino.h>
-#include <DMAInterrupts.h>
 #include <libmaple/dma.h>
 #include <libmaple/usart.h>
+
+typedef enum {
+  DMA_IRQ_HANDLER_NONE = 0,
+  DMA_IRQ_HANDLER_1 = 1,
+  DMA_IRQ_HANDLER_2 = 2,
+  DMA_IRQ_HANDLER_3 = 3
+} dma_irq_handler;
 
 class DMASerial {
  public:
   DMASerial(dma_dev* dev,
             dma_channel tube,
-            uint8_t size,
+            uint8_t buffer_size,
             dma_irq_handler handler);
   ~DMASerial(void);
 
-  void init(usart_dev* usart = USART1,
-            dma_request_src req_src = DMA_REQ_SRC_USART1_TX);
+  void init(usart_dev* usart = USART2,
+            dma_request_src req_src = DMA_REQ_SRC_USART2_TX);
   int8_t start(void);
   bool is_transfering(void);
   void on_completed(void);
@@ -36,6 +42,24 @@ class DMASerial {
   uint8_t* buffer;
   uint8_t index;
   bool transfering;
+};
+
+class DMAInterrupts {
+ public:
+  static DMASerial* serial1;
+  static DMASerial* serial2;
+  static DMASerial* serial3;
+
+  static void set_interrupt_handler(dma_irq_handler, DMASerial*);
+  static void remove_interrupt_handler(dma_irq_handler);
+
+  static void handler1(void);
+  static void handler2(void);
+  static void handler3(void);
+
+ private:
+  DMAInterrupts();
+  ~DMAInterrupts();
 };
 
 #endif

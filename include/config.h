@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 #define INITIAL_DELAY 3000
-#define SPIN_PERIOD 5  // ms
+#define SPIN_PERIOD 3  // ms
 #define BTN_PRESS_DELAY 500
 
 // Serial definitions
@@ -22,7 +22,6 @@
 #endif
 
 // Pin definitions
-#define VBAT_ADC PA0  // 2.2V
 #define I2C_SCL PB8
 #define I2C_SDA PB9
 #define BUTTON0 PB12
@@ -35,31 +34,47 @@
 #define LED2 PA7
 #define LED3 PA6
 #define LED4 PA5
-
-// Control States
-#define STATE_INITIAL 0
-#define STATE_IDLE 1
-#define STATE_MARCH 2
-#define STATE_WALK 3
-#define STATE_TURN 4
-#define STATE_FALLEN 5
-#define STATE_UP 6
-#define STATE_PENALIZED 7
-#define STATE_TURN90 8
+#define LED_CONNECTION LED0
+#define LED_CONTROL_MODE LED1
+#define LED_READY LED2
+#define LED_DEBUG LED4
 
 // Servos definitions
+#define RIGHT_ANKLE_ROLL 0
+#define RIGHT_ANKLE_PITCH 1
+#define RIGHT_KNEE 2
+#define RIGHT_HIP_PITCH 3
+#define RIGHT_HIP_ROLL 4
+#define RIGHT_HIP_YAW 5
+#define LEFT_ANKLE_ROLL 6
+#define LEFT_ANKLE_PITCH 7
+#define LEFT_KNEE 8
+#define LEFT_HIP_PITCH 9
+#define LEFT_HIP_ROLL 10
+#define LEFT_HIP_YAW 11
+#define LEFT_ARM_PITCH 12
+#define LEFT_ARM_YAW 13
+#define LEFT_ARM_ROLL 14
+#define RIGHT_ARM_PITCH 15
+#define RIGHT_ARM_YAW 16
+#define RIGHT_ARM_ROLL 17
+
+#define CHECK_ID RIGHT_HIP_YAW
 #define POS_MIN -1650
 #define POS_MAX 1650
 #define XYZ_POS_MIN 0
 #define XYZ_POS_MAX 1023
 #define NUM_SERVOS 18
-#define PLAYTIME 1
-#define PLAYTIME_SMOOTH 150
+#define PLAYTIME 5
+#define PLAYTIME_SMOOTH 100
+#define DELAY_PLAYTIME (PLAYTIME * 10)
+#define DELAY_PLAYTIME_SMOOTH (PLAYTIME_SMOOTH * 10)
 
-// XYZ Communication
+// XYZ Protocol
 #define XYZ_HEADER 0xFF
 #define BROADCAST_ID 254
-#define XYZ_POSITION_CONTROL 0
+#define SET_POSITION_CONTROL 0
+#define SET_TORQUE_OFF 2
 
 #define SJOG_CMD 0x06
 #define SJOG_HEADER_SIZE 8

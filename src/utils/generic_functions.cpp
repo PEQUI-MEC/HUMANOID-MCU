@@ -23,3 +23,15 @@ float range_map(float val,
 void toggle_pin(uint8_t pin) {
   digitalWrite(pin, !digitalRead(pin));
 }
+
+void two_stage_blink(uint8_t pin, bool reverse) {
+  uint8_t active = reverse ? LOW : HIGH;
+  digitalWrite(pin, active);
+  delay(500);
+  digitalWrite(pin, !active);
+  delay(50);
+  digitalWrite(pin, active);
+  delay(70);
+  digitalWrite(pin, !active);
+  delay(50);
+}

@@ -11,5 +11,6 @@ float range_map(float val,
                 float out_max);
 
 void toggle_pin(uint8_t pin);
+void two_stage_blink(uint8_t pin, bool reverse = false);
 
 #endif
