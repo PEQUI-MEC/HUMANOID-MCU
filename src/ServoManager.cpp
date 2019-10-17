@@ -3,16 +3,16 @@
 ServoManager manager;
 
 ServoManager::ServoManager(ManagerState start_state)
-    : servos{{BodyServo(RIGHT_ANKLE_ROLL, 5, 0, -30, false),
+    : servos{{BodyServo(RIGHT_ANKLE_ROLL, 5, 0, 10, false),
               BodyServo(RIGHT_ANKLE_PITCH, 10, 0, 0, true),
               BodyServo(RIGHT_KNEE, 16, 0, -20, false),
               BodyServo(RIGHT_HIP_PITCH, 4, 0, -5, false),
               BodyServo(RIGHT_HIP_ROLL, 15, 0, -30, false),
               BodyServo(RIGHT_HIP_YAW, 12, 0, 0, true),
-              BodyServo(LEFT_ANKLE_ROLL, 1, 0, -35, false),
-              BodyServo(LEFT_ANKLE_PITCH, 8, 0, -10, true),
-              BodyServo(LEFT_KNEE, 14, 0, -50, false),
-              BodyServo(LEFT_HIP_PITCH, 2, 0, -20, false),
+              BodyServo(LEFT_ANKLE_ROLL, 1, 0, -60, false),
+              BodyServo(LEFT_ANKLE_PITCH, 8, 0, 10, true),
+              BodyServo(LEFT_KNEE, 14, 0, 0, false),
+              BodyServo(LEFT_HIP_PITCH, 2, 0, -40, false),
               BodyServo(LEFT_HIP_ROLL, 9, 0, -15, false),
               BodyServo(LEFT_HIP_YAW, 6, 0, 0, true),
               BodyServo(LEFT_ARM_PITCH, 3, 0, 0, false),
@@ -87,6 +87,7 @@ void ServoManager::state_logic() {
 
 void ServoManager::reset() {
   set_state(ManagerState::Initial);
+  digitalWrite(LED_READY, LOW);
 
   for (uint8_t i = 0; i < servos.size(); i++)
     servos[i].set_position(0);

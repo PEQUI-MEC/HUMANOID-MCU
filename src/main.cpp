@@ -34,8 +34,6 @@ void setup() {
   delay(500);
 
   control.setup();
-  digitalWrite(LED1, HIGH);  // Indica que o modo esta no manual
-
   manager.serial.init(USART2, DMA_REQ_SRC_USART2_TX);
 }
 

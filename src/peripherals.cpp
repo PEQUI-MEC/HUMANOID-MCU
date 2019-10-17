@@ -61,10 +61,10 @@ void check_buttons() {
 
 void write_debug_led(uint8_t value) {
   digitalWrite(LED_BUILTIN, !value);
-  digitalWrite(LED4, value);
+  digitalWrite(LED_DEBUG, value);
 }
 
 void toggle_debug_led() {
   toggle_pin(LED_BUILTIN);
-  toggle_pin(LED4);
+  toggle_pin(LED_DEBUG);
 }

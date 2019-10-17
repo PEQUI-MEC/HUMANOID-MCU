@@ -37,6 +37,7 @@
 #define LED_CONNECTION LED0
 #define LED_CONTROL_MODE LED1
 #define LED_READY LED2
+#define LED_DEBUG LED4
 
 // Servos definitions
 #define RIGHT_ANKLE_ROLL 0
