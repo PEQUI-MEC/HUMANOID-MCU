@@ -35,7 +35,7 @@ class ServoManager {
   uint8_t* cmd_buffer;
   bool enable;
   bool torque;
-  bool smooth;
+  uint8_t playtime;
 
   ServoManager(ManagerState start_state = ManagerState::WaitServo);
   ~ServoManager();

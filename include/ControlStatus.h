@@ -7,8 +7,8 @@ enum class ControlState {
   March = 2,
   Walk = 3,
   Turn = 4,
-  Fallen = 5,
-  Up = 6
+  Interpolate = 5,
+  Fallen = 6
 };
 
 struct ControlStatus {

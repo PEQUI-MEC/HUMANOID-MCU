@@ -21,6 +21,7 @@ class RosCommunication {
   ros::Publisher cmd_pub;
   ros::Subscriber<std_msgs::Int16MultiArray> joint_pos_sub;
   ros::Subscriber<std_msgs::UInt8MultiArray> control_status_sub;
+  ros::Subscriber<std_msgs::Int16MultiArray> interpolate_sub;
 
   time_t last_spin;
   bool connected;
@@ -37,5 +38,6 @@ extern RosCommunication control;
 
 void joint_pos_callback(const std_msgs::Int16MultiArray& msg);
 void control_status_callback(const std_msgs::UInt8MultiArray& msg);
+void interpolation_callback(const std_msgs::Int16MultiArray& msg);
 
 #endif

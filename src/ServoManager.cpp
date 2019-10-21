@@ -39,7 +39,7 @@ ManagerState ServoManager::get_state() {
 void ServoManager::set_state(ManagerState state) {
   this->state = state;
   enable = true;
-  smooth = false;
+  playtime = PLAYTIME;
 
   switch (state) {
     case ManagerState::WaitServo:
@@ -48,7 +48,7 @@ void ServoManager::set_state(ManagerState state) {
 
     case ManagerState::Initial:
     case ManagerState::SendSmoothIdle:
-      smooth = true;
+      playtime = PLAYTIME_SMOOTH;
       break;
 
     case ManagerState::Ready:
@@ -127,7 +127,7 @@ void ServoManager::assemble_pos_cmd(uint8_t* buffer) {
   buffer[2] = SJOG_SIZE;
   buffer[3] = BROADCAST_ID;
   buffer[4] = SJOG_CMD;
-  buffer[7] = smooth ? PLAYTIME_SMOOTH : PLAYTIME;
+  buffer[7] = playtime;
 
   uint8_t index;
   uint16_t abs_pos;
@@ -158,7 +158,12 @@ bool ServoManager::send_pos_cmd() {
   if (serial.start() != DMA_TUBE_CFG_SUCCESS)
     return false;
 
-  delay.start(smooth ? DELAY_PLAYTIME_SMOOTH : DELAY_PLAYTIME);
+  delay.start(playtime * 10);
+
+  if (control.status.state == ControlState::Interpolate) {
+    enable = false;
+    control.publish_command("next_interpolation");
+  }
 
   // toggle_pin(LED_BUILTIN);
   return true;

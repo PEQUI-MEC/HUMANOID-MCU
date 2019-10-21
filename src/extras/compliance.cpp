@@ -108,10 +108,10 @@ void handleSerialCommands() {
 
   if (input == 'r') {
     for (uint8_t i = 0; i < NUM_SERVOS; i++) {
-      uint16_t posRef = servos[i].readPosRef();
+      int16_t posRef = ((servos[i].readPosition() / 1024.0) * 3300.0) - 1650;
       Serial.print(posRef);
       if (i + 1 != NUM_SERVOS)
-        Serial.print(F(", "));
+        Serial.print(F(","));
     }
 
     Serial.println();

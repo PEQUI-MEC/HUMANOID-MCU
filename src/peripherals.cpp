@@ -2,7 +2,10 @@
 
 time_t btn_last_press[] = {0, 0, 0, 0, 0};
 
-void run_button0_action() {}
+void run_button0_action() {
+  control.publish_command("reset");
+  manager.reset();
+}
 
 void run_button1_action() {
   control.publish_command(control.status.is_mode_manual ? "set_mode_auto"
@@ -14,10 +17,7 @@ void run_button2_action() {
     control.publish_command("walk");
 }
 
-void run_button3_action() {
-  control.publish_command("reset");
-  manager.reset();
-}
+void run_button3_action() {}
 
 void run_button4_action() {
   if (manager.get_state() == ManagerState::WaitServo) {
