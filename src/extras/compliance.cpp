@@ -66,9 +66,6 @@ void setup() {
   SERIAL_SERVOS.setTimeout(20);
 
   delay(3000);
-
-  for (auto servo : servos)
-    servo.setPosition(1024 / 2, 1);
 }
 
 bool updateServo(XYZrobotServo& servo) {

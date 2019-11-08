@@ -3,13 +3,13 @@
 ServoManager manager;
 
 ServoManager::ServoManager(ManagerState start_state)
-    : servos{{BodyServo(RIGHT_ANKLE_ROLL, RIGHT_ANKLE_ROLL_ID, 0, 10, false),
+    : servos{{BodyServo(RIGHT_ANKLE_ROLL, RIGHT_ANKLE_ROLL_ID, 0, -20, false),
               BodyServo(RIGHT_ANKLE_PITCH, RIGHT_ANKLE_PITCH_ID, 0, 0, true),
               BodyServo(RIGHT_KNEE, RIGHT_KNEE_ID, 0, -20, false),
               BodyServo(RIGHT_HIP_PITCH, RIGHT_HIP_PITCH_ID, 0, -5, false),
-              BodyServo(RIGHT_HIP_ROLL, RIGHT_HIP_ROLL_ID, 0, -30, false),
+              BodyServo(RIGHT_HIP_ROLL, RIGHT_HIP_ROLL_ID, 0, -90, false),
               BodyServo(RIGHT_HIP_YAW, RIGHT_HIP_YAW_ID, 0, 0, true),
-              BodyServo(LEFT_ANKLE_ROLL, LEFT_ANKLE_ROLL_ID, 0, -60, false),
+              BodyServo(LEFT_ANKLE_ROLL, LEFT_ANKLE_ROLL_ID, 0, -50, false),
               BodyServo(LEFT_ANKLE_PITCH, LEFT_ANKLE_PITCH_ID, 0, 10, true),
               BodyServo(LEFT_KNEE, LEFT_KNEE_ID, 0, 0, false),
               BodyServo(LEFT_HIP_PITCH, LEFT_HIP_PITCH_ID, 0, -40, false),
@@ -17,7 +17,7 @@ ServoManager::ServoManager(ManagerState start_state)
               BodyServo(LEFT_HIP_YAW, LEFT_HIP_YAW_ID, 0, 0, true),
               BodyServo(LEFT_ARM_PITCH, LEFT_ARM_PITCH_ID, 0, 0, false),
               BodyServo(LEFT_ARM_YAW, LEFT_ARM_YAW_ID, 0, 0, false),
-              BodyServo(LEFT_ARM_ROLL, LEFT_ARM_ROLL_ID, 0, 0, false),
+              BodyServo(LEFT_ARM_ROLL, LEFT_ARM_ROLL_ID, 0, -20, false),
               BodyServo(RIGHT_ARM_PITCH, RIGHT_ARM_PITCH_ID, 0, 0, false),
               BodyServo(RIGHT_ARM_YAW, RIGHT_ARM_YAW_ID, 0, 0, false),
               BodyServo(RIGHT_ARM_ROLL, RIGHT_ARM_ROLL_ID, 0, 0, false)}},
