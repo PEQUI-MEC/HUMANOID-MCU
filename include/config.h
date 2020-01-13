@@ -3,43 +3,93 @@
 
 #include <Arduino.h>
 
+// TODO: Add documentation on extras/pid_tuning
+// TODO: Add documentation on DMASerial
+
+/**
+ * Timing Definitions
+ *
+ * Defines delays and periods used throughout the program.
+ */
+
+// Delay before the main execution begins (ms).
 #define INITIAL_DELAY 3000
-#define SPIN_PERIOD 3  // ms
+// Delay between each ros-serial spin (ms).
+#define SPIN_PERIOD 3
+// Time after a button press that new button presses will be ignored (ms).
 #define BTN_PRESS_DELAY 500
 
-// Serial definitions
+/**
+ * Serial Definitions
+ *
+ * Defines baud rates and which Serial sould be used for each application.
+ */
+
+// Baud rate of the serial used on ros-serial.
 #define BAUD_RATE_CONTROL 500000
+// Baud rate of the serial used to communicate with servos.
 #define BAUD_RATE_SERVOS 115200
+// Baud rate of the debug serial.
 #define BAUD_RATE_DEBUG 115200
+// The Serial instance used with ros-serial.
 #define SERIAL_CONTROL Serial
 
 #ifdef USE_STM32_HW_SERIAL
+// The Serial instance used to communicate with servos.
 #define SERIAL_SERVOS Serial1
+// The Serial instance used to debug.
 #define SERIAL_DEBUG Serial2
 #else
+// The Serial instance used to communicate with servos.
 #define SERIAL_SERVOS Serial2
+// The Serial instance used to debug.
 #define SERIAL_DEBUG Serial3
 #endif
 
-// Pin definitions
+/**
+ * Pin Definitions
+ *
+ * Defines used to map pins to specific functions.
+ */
+
 #define I2C_SCL PB8
 #define I2C_SDA PB9
+// Input pin of button0 from io board.
 #define BUTTON0 PB12
+// Input pin of button1 from io board.
 #define BUTTON1 PB13
+// Input pin of button2 from io board.
 #define BUTTON2 PB14
+// Input pin of button3 from io board.
 #define BUTTON3 PB15
+// Input pin of button4 from io board.
 #define BUTTON4 PA8
+// Output pin for LED0 on io board.
 #define LED0 PB1
+// Output pin for LED1 on io board.
 #define LED1 PB0
+// Output pin for LED2 on io board.
 #define LED2 PA7
+// Output pin for LED3 on io board.
 #define LED3 PA6
+// Output pin for LED4 on io board.
 #define LED4 PA5
+// Output pin of the led used to indicate the ros-serial connection.
 #define LED_CONNECTION LED0
+// Output pin of the led used to indicate the control mode (manual or auto).
 #define LED_CONTROL_MODE LED1
+// Output pin of the led used to indicate if the ServoManager is ready.
 #define LED_READY LED2
+// Output pin of the led used for debug purposes.
 #define LED_DEBUG LED4
 
-// Servos definitions
+/**
+ * Servo Definitions
+ *
+ * Constants used for managing the servos.
+ */
+
+// Control IDs of servos for each joint.
 #define RIGHT_ANKLE_ROLL 0
 #define RIGHT_ANKLE_PITCH 1
 #define RIGHT_KNEE 2
@@ -59,6 +109,7 @@
 #define RIGHT_ARM_YAW 16
 #define RIGHT_ARM_ROLL 17
 
+// Real IDs of servos for each joint.
 #define RIGHT_ANKLE_ROLL_ID 5
 #define RIGHT_ANKLE_PITCH_ID 10
 #define RIGHT_KNEE_ID 16
@@ -78,26 +129,50 @@
 #define RIGHT_ARM_YAW_ID 17
 #define RIGHT_ARM_ROLL_ID 18
 
+// ID of the servo to be checked for connection on the WaitServo state.
 #define CHECK_ID RIGHT_HIP_YAW
+// Minimum position the servo can execute, in degrees * 10.
 #define POS_MIN -1650
+// Maximum position the servo can execute, in degrees * 10.
 #define POS_MAX 1650
+// Value of POS_MIN in the XYZ protocol.
 #define XYZ_POS_MIN 0
+// Value of POS_MAX in the XYZ protocol.
 #define XYZ_POS_MAX 1023
+// Number of servos in the body.
 #define NUM_SERVOS 18
+// Playtime for regular position commands, in centisecond (10 * milli).
 #define PLAYTIME 5
+// Playtime for smooth position commands, in centisecond (10 * milli).
 #define PLAYTIME_SMOOTH 100
+// Delay in milliseconds of the regular playtime.
 #define DELAY_PLAYTIME (PLAYTIME * 10)
+// Delay in milliseconds of the smooth playtime.
 #define DELAY_PLAYTIME_SMOOTH (PLAYTIME_SMOOTH * 10)
 
-// XYZ Protocol
+/**
+ * XYZ Protocol Definitions
+ *
+ * Constants used in the serial commands of the protocol used by the XYZrobot
+ * servos.
+ */
+
+// Header byte to open the message.
 #define XYZ_HEADER 0xFF
+// ID used to broadcast the message to all servos.
 #define BROADCAST_ID 254
+// Used to set the control mode of the servo as position control.
 #define SET_POSITION_CONTROL 0
+// Used to set the control mode of the servo as torque off.
 #define SET_TORQUE_OFF 2
 
+// Byte used to indicate an SJOG command.
 #define SJOG_CMD 0x06
+// Number of bytes in the header section of the SJOG command.
 #define SJOG_HEADER_SIZE 8
+// Number of bytes in the data section of the SJOG command.
 #define SJOG_DATA_SIZE (4 * NUM_SERVOS)
+// Total number of bytes in the SJOG command.
 #define SJOG_SIZE (SJOG_HEADER_SIZE + SJOG_DATA_SIZE)
 
 #define IJOG_CMD 0x05

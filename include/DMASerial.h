@@ -5,6 +5,9 @@
 #include <libmaple/dma.h>
 #include <libmaple/usart.h>
 
+/**
+ * Enumaration of the DMA IRQ Handlers available.
+ */
 typedef enum {
   DMA_IRQ_HANDLER_NONE = 0,
   DMA_IRQ_HANDLER_1 = 1,
@@ -12,6 +15,9 @@ typedef enum {
   DMA_IRQ_HANDLER_3 = 3
 } dma_irq_handler;
 
+/**
+ * Class to encapsulate access of a UART through DMA using stm32 HAL.
+ */
 class DMASerial {
  public:
   DMASerial(dma_dev* dev,
@@ -44,6 +50,9 @@ class DMASerial {
   bool transfering;
 };
 
+/**
+ * Class to handle DMA IRQs
+ */
 class DMAInterrupts {
  public:
   static DMASerial* serial1;

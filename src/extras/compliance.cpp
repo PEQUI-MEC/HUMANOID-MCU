@@ -7,7 +7,7 @@
 #include <config.h>
 
 // This is the maximum PWM value, out of 1023, to use when
-// driving the servos.  Setting it lower makes it easier to
+// driving the servos. Setting it lower makes it easier to
 // manipulate the arm by hand, but if you set it too low, the arm
 // will not be able to hold itself up.
 const uint16_t maxPwm = 80;
@@ -108,7 +108,7 @@ void handleSerialCommands() {
       int16_t posRef = ((servos[i].readPosition() / 1024.0) * 3300.0) - 1650;
       Serial.print(posRef);
       if (i + 1 != NUM_SERVOS)
-        Serial.print(F(","));
+        Serial.print(F(", "));
     }
 
     Serial.println();
