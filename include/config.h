@@ -3,7 +3,6 @@
 
 #include <Arduino.h>
 
-// TODO: Finish documentation on config
 // TODO: Add documentation on extras/pid_tuning
 // TODO: Add documentation on DMASerial
 
@@ -84,7 +83,13 @@
 // Output pin of the led used for debug purposes.
 #define LED_DEBUG LED4
 
-// Servos definitions
+/**
+ * Servo Definitions
+ *
+ * Constants used for managing the servos.
+ */
+
+// Control IDs of servos for each joint.
 #define RIGHT_ANKLE_ROLL 0
 #define RIGHT_ANKLE_PITCH 1
 #define RIGHT_KNEE 2
@@ -104,6 +109,7 @@
 #define RIGHT_ARM_YAW 16
 #define RIGHT_ARM_ROLL 17
 
+// Real IDs of servos for each joint.
 #define RIGHT_ANKLE_ROLL_ID 5
 #define RIGHT_ANKLE_PITCH_ID 10
 #define RIGHT_KNEE_ID 16
@@ -123,26 +129,50 @@
 #define RIGHT_ARM_YAW_ID 17
 #define RIGHT_ARM_ROLL_ID 18
 
+// ID of the servo to be checked for connection on the WaitServo state.
 #define CHECK_ID RIGHT_HIP_YAW
+// Minimum position the servo can execute, in degrees * 10.
 #define POS_MIN -1650
+// Maximum position the servo can execute, in degrees * 10.
 #define POS_MAX 1650
+// Value of POS_MIN in the XYZ protocol.
 #define XYZ_POS_MIN 0
+// Value of POS_MAX in the XYZ protocol.
 #define XYZ_POS_MAX 1023
+// Number of servos in the body.
 #define NUM_SERVOS 18
+// Playtime for regular position commands, in centisecond (10 * milli).
 #define PLAYTIME 5
+// Playtime for smooth position commands, in centisecond (10 * milli).
 #define PLAYTIME_SMOOTH 100
+// Delay in milliseconds of the regular playtime.
 #define DELAY_PLAYTIME (PLAYTIME * 10)
+// Delay in milliseconds of the smooth playtime.
 #define DELAY_PLAYTIME_SMOOTH (PLAYTIME_SMOOTH * 10)
 
-// XYZ Protocol
+/**
+ * XYZ Protocol Definitions
+ *
+ * Constants used in the serial commands of the protocol used by the XYZrobot
+ * servos.
+ */
+
+// Header byte to open the message.
 #define XYZ_HEADER 0xFF
+// ID used to broadcast the message to all servos.
 #define BROADCAST_ID 254
+// Used to set the control mode of the servo as position control.
 #define SET_POSITION_CONTROL 0
+// Used to set the control mode of the servo as torque off.
 #define SET_TORQUE_OFF 2
 
+// Byte used to indicate an SJOG command.
 #define SJOG_CMD 0x06
+// Number of bytes in the header section of the SJOG command.
 #define SJOG_HEADER_SIZE 8
+// Number of bytes in the data section of the SJOG command.
 #define SJOG_DATA_SIZE (4 * NUM_SERVOS)
+// Total number of bytes in the SJOG command.
 #define SJOG_SIZE (SJOG_HEADER_SIZE + SJOG_DATA_SIZE)
 
 #define IJOG_CMD 0x05
